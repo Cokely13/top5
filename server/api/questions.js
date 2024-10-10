@@ -33,7 +33,10 @@ module.exports = router;
 router.get('/', async (req, res, next) => {
   try {
     const questions = await Question.findAll({
-      include: [Answer],
+      include: [{
+        model: Answer,
+        as: 'answers' // Must match the alias defined in the association
+      }]
     });
     res.json(questions);
   } catch (err) {
@@ -91,7 +94,10 @@ router.put('/:id', upload.fields([{ name: 'imageA' }, { name: 'imageB' }]), asyn
 router.get('/:id', async (req, res, next) => {
   try {
     const question = await Question.findByPk(req.params.id, {
-      include: [Answer],
+      include: [{
+        model: Answer,
+        as: 'answers' // Must match the alias defined in the association
+      }]
     });
     res.json(question);
   } catch (err) {
