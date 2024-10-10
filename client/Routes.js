@@ -11,6 +11,8 @@ import Profile from './components/Profile';
 import CreateQuestion from './components/CreateQuestion';
 import QuestionReview from './components/QuestionReview';
 import EditQuestion from './components/EditQuestion';
+import TodaysLeaderboard from './components/TodaysLeaderboard';
+import CareerLeaderboard from './components/CareerLeaderboard';
 
 /**
  * COMPONENT
@@ -32,6 +34,8 @@ class Routes extends Component {
             <Route exact path="/users" component={Users} />
             <Route exact path="/users/:userId" component={UserDetailPage} />
             <Route exact path="/questions" component={Questions} />
+            <Route exact path="/leaderboard" component={TodaysLeaderboard} />
+            <Route exact path="/career" component={CareerLeaderboard} />
             <Route exact path="/create" component={CreateQuestion} />
             <Route exact path="/review" component={QuestionReview} />
             <Route path="/edit-question/:id" component={EditQuestion} />

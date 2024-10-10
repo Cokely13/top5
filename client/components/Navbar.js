@@ -87,16 +87,6 @@ const Navbar = ({ handleClick, isLoggedIn, isAdmin }) => {
                       Users
                     </NavLink>
                   </li>
-                  <li>
-                    <NavLink to="/myvotes" onClick={closeMobileMenu}>
-                      MyVotes
-                    </NavLink>
-                  </li>
-                  <li>
-                    <NavLink to="/invites" onClick={closeMobileMenu}>
-                      Invites
-                    </NavLink>
-                  </li>
                 </ul>
               </li>
 
@@ -124,28 +114,6 @@ const Navbar = ({ handleClick, isLoggedIn, isAdmin }) => {
                 >
                   Groups <i className="fas fa-caret-down"></i>
                 </span>
-                <ul className="dropdown-menu">
-                  <li>
-                    <NavLink to="/groups" onClick={closeMobileMenu}>
-                      Groups
-                    </NavLink>
-                  </li>
-                  <li>
-                    <NavLink to="/mygroups" onClick={closeMobileMenu}>
-                      MyGroups
-                    </NavLink>
-                  </li>
-                  <li>
-                    <NavLink to="/group" onClick={closeMobileMenu}>
-                      CreateGroup
-                    </NavLink>
-                  </li>
-                  <li>
-                    <NavLink to="/invites" onClick={closeMobileMenu}>
-                      Invites
-                    </NavLink>
-                  </li>
-                </ul>
               </li>
 
               {/* Questions Dropdown */}
@@ -181,6 +149,42 @@ const Navbar = ({ handleClick, isLoggedIn, isAdmin }) => {
                   <li>
                     <NavLink to="/create" onClick={closeMobileMenu}>
                       CreateQuestion
+                    </NavLink>
+                  </li>
+                </ul>
+              </li>
+              <li
+                className={`nav-item dropdown ${activeDropdown === 'questions' ? 'active' : ''}`}
+                onMouseEnter={() => {
+                  if (window.innerWidth > 768) {
+                    setActiveDropdown('questions');
+                  }
+                }}
+                onMouseLeave={() => {
+                  if (window.innerWidth > 768) {
+                    setActiveDropdown(null);
+                  }
+                }}
+              >
+                <span
+                  className="nav-link"
+                  onClick={() => {
+                    if (window.innerWidth <= 768) {
+                      toggleDropdown('questions');
+                    }
+                  }}
+                >
+                 Boards <i className="fas fa-caret-down"></i>
+                </span>
+                <ul className="dropdown-menu">
+                  <li>
+                    <NavLink to="/leaderboard" onClick={closeMobileMenu}>
+                      TodaysLeaderboard
+                    </NavLink>
+                  </li>
+                  <li>
+                    <NavLink to="/career" onClick={closeMobileMenu}>
+                     CareerLeaderboard
                     </NavLink>
                   </li>
                 </ul>
