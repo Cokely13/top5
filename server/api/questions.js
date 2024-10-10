@@ -1,59 +1,7 @@
-// const router = require('express').Router()
-// const { models: { Question, UserResponse, Consensus }} = require('../db')
-// module.exports = router
 
-
-// router.get('/', async (req, res, next) => {
-//   try {
-//     const questions = await Question.findAll({ include: [ UserResponse, Consensus
-//     ]},);
-//     res.json(questions);
-//   } catch (err) {
-//     next(err);
-//   }
-// });
-
-// //POST: add a new Question
-// router.post("/", async (req, res, next) => {
-//   try {
-//     res.status(201).send(await Question.create(req.body));
-//   } catch (error) {
-//     next(error);
-//   }
-// });
-
-// router.put('/:id', async (req, res, next) => {
-//   try {
-//     const question = await Question.findByPk(req.params.id)
-//     res.send(await question.update(req.body));
-//   } catch (error) {
-//     next(error);
-//   }
-// });
-
-// //Get read all questions
-// router.get('/:id', async (req, res, next) => {
-//   try {
-//     const question = await Question.findByPk(req.params.id, { include: [ UserResponse, Consensus
-//     ]});
-//     res.json(question);
-//   } catch (err) {
-//     next(err);
-//   }
-// });
-
-// router.delete('/:id', async (req, res, next) => {
-//   try {
-//     const question = await Question.findByPk(req.params.id);
-//     await question.destroy();
-//     res.send(question);
-//   } catch (error) {
-//     next(error);
-//   }
-// });
 
 const router = require('express').Router();
-const { models: { Question, UserResponse, Consensus }} = require('../db');
+const { models: { Question, Answer }} = require('../db');
 const { S3Client } = require('@aws-sdk/client-s3'); // AWS SDK v3
 const multer = require('multer');
 const multerS3 = require('multer-s3');
@@ -85,7 +33,7 @@ module.exports = router;
 router.get('/', async (req, res, next) => {
   try {
     const questions = await Question.findAll({
-      include: [UserResponse, Consensus],
+      include: [Answer],
     });
     res.json(questions);
   } catch (err) {
@@ -143,7 +91,7 @@ router.put('/:id', upload.fields([{ name: 'imageA' }, { name: 'imageB' }]), asyn
 router.get('/:id', async (req, res, next) => {
   try {
     const question = await Question.findByPk(req.params.id, {
-      include: [UserResponse, Consensus],
+      include: [Answer],
     });
     res.json(question);
   } catch (err) {

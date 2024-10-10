@@ -1,6 +1,5 @@
 
-
-
+require('dotenv').config();
 const router = require('express').Router();
 const {
   models: { User, Group, UserResponse, GroupMember, Invite },
@@ -9,7 +8,7 @@ module.exports = router;
 const { S3Client } = require('@aws-sdk/client-s3'); // AWS SDK v3
 const multer = require('multer');
 const multerS3 = require('multer-s3');
-require('dotenv').config();
+
 
 // Initialize S3 client
 const s3Client = new S3Client({
@@ -31,7 +30,6 @@ const upload = multer({
   }),
 });
 
-module.exports = router;
 
 
 router.get('/', async (req, res, next) => {
