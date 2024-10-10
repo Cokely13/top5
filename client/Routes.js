@@ -11,14 +11,7 @@ import UserDetailPage from './components/UserDetailPage';
 import Profile from './components/Profile';
 import CreateQuestion from './components/CreateQuestion';
 import QuestionReview from './components/QuestionReview';
-import CreateGroup from './components/CreateGroup';
-import Groups from './components/Groups';
-import GroupDetailPage from './components/GroupDetailPage';
-import Invites from './components/Invites';
-import MyGroups from './components/MyGroups';
-import MyVotes from './components/MyVotes';
 import EditQuestion from './components/EditQuestion';
-import EditGroup from './components/EditGroup';
 
 /**
  * COMPONENT
@@ -40,17 +33,10 @@ class Routes extends Component {
             <Route exact path="/users" component={Users} />
             <Route exact path="/users/:userId" component={UserDetailPage} />
             <Route exact path="/questions" component={Questions} />
-            <Route exact path="/myvotes" component={MyVotes} />
             <Route exact path="/archive" component={Archive} />
-            <Route exact path="/group" component={CreateGroup} />
-            <Route exact path="/groups" component={Groups} />
-            <Route exact path="/mygroups" component={MyGroups} />
-            <Route exact path="/invites" component={Invites} />
-            <Route exact path="/groups/:groupId" component={GroupDetailPage} />
             <Route exact path="/create" component={CreateQuestion} />
             <Route exact path="/review" component={QuestionReview} />
             <Route path="/edit-question/:id" component={EditQuestion} />
-            <Route path="/edit-group/:id" component={EditGroup} />
             <Redirect to="/home" />
           </Switch>
         ) : (
