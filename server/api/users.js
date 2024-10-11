@@ -37,24 +37,6 @@ router.get('/', async (req, res, next) => {
     const users = await User.findAll({
       attributes: ['id', 'username', 'careerHighWinStreak', 'careerHighLossStreak', 'careerHighNoVoteStreak', 'admin', 'image', 'email'],
       include: [
-        {
-          model: Group,
-          through: { model: GroupMember },
-          attributes: ['id', 'name'],
-        },
-        {
-          model: UserResponse,
-          attributes: ['id', 'response', 'questionId',],
-        },
-        {
-          model: Invite, // Include invites sent to this user
-          as: 'invites', // Alias for the invites association
-          attributes: ['id', 'status', 'groupId', 'inviterId', 'createdAt'],
-          include: [
-            { model: Group, attributes: ['id', 'name'] },
-            { model: User, as: 'inviter', attributes: ['id', 'username'] },
-          ],
-        },
       ],
     });
     res.json(users);
@@ -122,26 +104,6 @@ router.get('/:id', async (req, res, next) => {
   try {
     const user = await User.findByPk(req.params.id, {
       attributes: ['id', 'username', 'careerHighWinStreak', 'careerHighLossStreak', 'careerHighNoVoteStreak', 'admin', 'image', 'email'],
-      include: [
-        {
-          model: Group,
-          through: { model: GroupMember },
-          attributes: ['id', 'name'],
-        },
-        {
-          model: UserResponse,
-          attributes: ['id', 'response', 'questionId', 'createdAt'],
-        },
-        {
-          model: Invite, // Include invites sent to this user
-          as: 'invites',
-          attributes: ['id', 'status', 'groupId', 'inviterId',],
-          include: [
-            { model: Group, attributes: ['id', 'name'] },
-            { model: User, as: 'inviter', attributes: ['id', 'username'] },
-          ],
-        },
-      ],
     });
     res.json(user);
   } catch (err) {

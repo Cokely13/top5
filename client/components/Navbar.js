@@ -130,16 +130,6 @@ const Navbar = ({ handleClick, isLoggedIn, isAdmin }) => {
                   }
                 }}
               >
-                <span
-                  className="nav-link"
-                  onClick={() => {
-                    if (window.innerWidth <= 768) {
-                      toggleDropdown('questions');
-                    }
-                  }}
-                >
-                  Questions <i className="fas fa-caret-down"></i>
-                </span>
                 <ul className="dropdown-menu">
                   <li>
                     <NavLink to="/archive" onClick={closeMobileMenu}>
