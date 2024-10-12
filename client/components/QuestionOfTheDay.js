@@ -1,140 +1,31 @@
-// import React, { useEffect, useState } from 'react';
-// import { useDispatch, useSelector } from 'react-redux';
-// import { fetchQuestions } from '../store/allQuestionsStore';
-// import { fetchUsers } from '../store/allUsersStore';
-// import { fetchSingleUser, updateSingleUser } from '../store/singleUserStore';
-
-
-// function QuestionOfTheDay() {
-//   const dispatch = useDispatch();
-//   const questions = useSelector((state) => state.allQuestions || []);
-//   const users = useSelector((state) => state.allUsers || []);
-//   const { id: userId } = useSelector((state) => state.auth);
-//   const user = useSelector((state) => state.singleUser);
-//   const [selectedQuestion, setSelectedQuestion] = useState(null);
-//   const [yesterdayQuestion, setYesterdayQuestion] = useState(null);
-//   const [hasVoted, setHasVoted] = useState(false);
-//   const [todaysVote, setTodaysVote] = useState('');
-//   const [timeLeft, setTimeLeft] = useState('');
-//   const [yesterdayConsensus, setYesterdayConsensus] = useState('');
-//   const [yesterdayResult, setYesterdayResult] = useState('');
-//   const [streak, setStreak] = useState({ correct: 0, incorrect: 0, noVote: 0 });
-//   const [careerHigh, setCareerHigh] = useState({
-//     winStreak: 0,
-//     lossStreak: 0,
-//     noVoteStreak: 0,
-//   });
-
-//   useEffect(() => {
-//     dispatch(fetchQuestions());
-//     dispatch(fetchUsers());
-//     if (userId) {
-//       dispatch(fetchSingleUser(userId));
-//     }
-//   }, [dispatch, userId]);
-
-
-
-
-
-
-
-//   return (
-//     <div className="qotd-container">
-//       {selectedQuestion ? (
-//         <div className="qotd-question-section">
-//           <h2 className="qotd-heading">Question of the Day</h2>
-//           <p className="qotd-date">{new Date().toLocaleDateString()}</p>
-//           <h3 className="qotd-timer">
-//             {hasVoted
-//               ? 'Time Until the Next Question:'
-//               : 'Time Left to Answer the Question:'}{' '}
-//             {timeLeft}
-//           </h3>
-//           {!hasVoted ? (
-//             <div className="qotd-options-container">
-//               <div className="qotd-option">
-//                 <img
-//                   src={selectedQuestion.imageA}
-//                   alt={selectedQuestion.optionA}
-//                   className="qotd-option-image"
-//                 />
-//                 <button
-//                   onClick={() => handleVote('optionA')}
-//                   className="qotd-vote-button"
-//                 >
-//                   {selectedQuestion.optionA}
-//                 </button>
-//               </div>
-//               <div className="qotd-option">
-//                 <img
-//                   src={selectedQuestion.imageB}
-//                   alt={selectedQuestion.optionB}
-//                   className="qotd-option-image"
-//                 />
-//                 <button
-//                   onClick={() => handleVote('optionB')}
-//                   className="qotd-vote-button"
-//                 >
-//                   {selectedQuestion.optionB}
-//                 </button>
-//               </div>
-//             </div>
-//           ) : (
-//             <div className="qotd-already-voted">
-//               <p>Your Vote:</p>
-//               {todaysVote === 'option_a' ? (
-//                 <div>
-//                   <img
-//                     src={selectedQuestion.imageA}
-//                     alt={selectedQuestion.optionA}
-//                     className="qotd-option-image"
-//                   />
-//                   <p>{selectedQuestion.optionA}</p>
-//                 </div>
-//               ) : (
-//                 <div>
-//                   <img
-//                     src={selectedQuestion.imageB}
-//                     alt={selectedQuestion.optionB}
-//                     className="qotd-option-image"
-//                   />
-//                   <p>{selectedQuestion.optionB}</p>
-//                 </div>
-//               )}
-//             </div>
-//           )}
-//         </div>
-//       ) : (
-//         <div className="qotd-no-question">
-//           {questions.length > 0 ? 'No question for today.' : 'Loading questions...'}
-//         </div>
-//       )}
-//     </div>
-//   );
-// }
-
-// export default QuestionOfTheDay;
+// components/QuestionOfTheDay.js
 
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchQuestions } from '../store/allQuestionsStore';
 import { fetchUsers } from '../store/allUsersStore';
-import { fetchSingleUser, updateSingleUser } from '../store/singleUserStore';
+import { fetchSingleUser } from '../store/singleUserStore';
+import { fetchGuesses, createGuess } from '../store/allGuessesStore';
+// import './QuestionOfTheDay.css'; // Ensure you have corresponding CSS
 
 function QuestionOfTheDay() {
   const dispatch = useDispatch();
+
+  // Selectors
   const questions = useSelector((state) => state.allQuestions || []);
   const users = useSelector((state) => state.allUsers || []);
-  const { id: userId } = useSelector((state) => state.auth);
+  const { id: userId } = useSelector((state) => state.auth); // Ensure userId is available
   const user = useSelector((state) => state.singleUser);
+  const guesses = useSelector((state) => state.guesses || []);
 
-  // State variables
+  // Local State
   const [selectedQuestion, setSelectedQuestion] = useState(null);
   const [userAnswer, setUserAnswer] = useState('');
   const [rankedAnswers, setRankedAnswers] = useState(Array(10).fill('')); // 10 blank slots
   const [strikes, setStrikes] = useState(0);
   const maxStrikes = 3; // Define maximum strikes allowed
+  const [feedbackMessage, setFeedbackMessage] = useState('');
+  const [previousGuessCount, setPreviousGuessCount] = useState(0);
 
   useEffect(() => {
     dispatch(fetchQuestions());
@@ -146,42 +37,133 @@ function QuestionOfTheDay() {
 
   useEffect(() => {
     if (questions.length > 0) {
-      // Assuming the first question is today's question
-      setSelectedQuestion(questions[0]);
-    }
-  }, [questions]);
+      // Select today's question based on dateAsked
+      const todayDate = new Date().toISOString().split('T')[0];
+      const todayQuestion = questions.find(
+        (q) => q.dateAsked === todayDate
+      ) || questions[0]; // Fallback to the first question
+      setSelectedQuestion(todayQuestion);
 
-  const handleSubmit = (e) => {
+      // Fetch all guesses
+      dispatch(fetchGuesses());
+    }
+  }, [questions, dispatch]);
+
+  useEffect(() => {
+    if (selectedQuestion && guesses.length > 0) {
+      // Filter guesses for the current user and current question
+      const userGuesses = guesses.filter(
+        (guess) => guess.userId === userId && guess.questionId === selectedQuestion.id
+      );
+
+      // Initialize rankedAnswers and strikes
+      const newRankedAnswers = Array(10).fill('');
+      let newStrikes = 0;
+
+      userGuesses.forEach((guess) => {
+        const matchedAnswer = selectedQuestion.answers.find(
+          (ans) => ans.text.toLowerCase() === guess.guess.toLowerCase()
+        );
+
+        if (matchedAnswer) {
+          const rankIndex = matchedAnswer.rank - 1;
+          newRankedAnswers[rankIndex] = matchedAnswer.text;
+        }
+
+        if (guess.strikes) {
+          newStrikes += guess.strikes;
+        }
+      });
+
+      setRankedAnswers(newRankedAnswers);
+      setStrikes(newStrikes);
+    }
+  }, [guesses, selectedQuestion, userId]);
+
+  useEffect(() => {
+    if (selectedQuestion && guesses.length > previousGuessCount) {
+      const newGuesses = guesses.slice(previousGuessCount);
+      newGuesses.forEach((guess) => {
+        const matchedAnswer = selectedQuestion.answers.find(
+          (ans) => ans.text.toLowerCase() === guess.guess.toLowerCase()
+        );
+
+        if (matchedAnswer) {
+          // Correct guess
+          setFeedbackMessage(`Correct! You earned ${10 - matchedAnswer.rank + 1} points.`);
+        } else {
+          // Incorrect guess
+          setFeedbackMessage(`Incorrect. You have ${guess.strikes} strike(s).`);
+        }
+      });
+
+      setPreviousGuessCount(guesses.length);
+    }
+  }, [guesses, selectedQuestion, previousGuessCount]);
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!selectedQuestion) return;
 
-    // Find the answer ignoring case
-    const matchedAnswer = selectedQuestion.answers.find(
-      (ans) => ans.text.toLowerCase() === userAnswer.trim().toLowerCase()
+    const trimmedAnswer = userAnswer.trim().toLowerCase();
+    if (trimmedAnswer === '') {
+      setFeedbackMessage('Please enter a valid answer.');
+      return;
+    }
+
+    // Check if the user has already guessed this answer
+    const existingGuess = guesses.find(
+      (guess) =>
+        guess.userId === userId &&
+        guess.questionId === selectedQuestion.id &&
+        guess.guess.toLowerCase() === trimmedAnswer
     );
 
-    if (matchedAnswer) {
-      const rankIndex = matchedAnswer.rank - 1; // Array index starts at 0
-      if (rankedAnswers[rankIndex] === '') {
-        const updatedRankedAnswers = [...rankedAnswers];
-        updatedRankedAnswers[rankIndex] = matchedAnswer.text;
-        setRankedAnswers(updatedRankedAnswers);
-        setUserAnswer('');
-      } else {
-        alert(`Rank ${matchedAnswer.rank} is already filled with "${matchedAnswer.text}".`);
-      }
-    } else {
-      setStrikes(strikes + 1);
-      alert('Incorrect answer. You have a strike.');
+    if (existingGuess) {
+      setFeedbackMessage('You have already guessed this answer.');
+      return;
     }
+
+    try {
+      // Dispatch createGuess
+      await dispatch(createGuess({
+        questionId: selectedQuestion.id,
+        userId: userId, // Pass userId
+        guess: userAnswer.trim(),
+      }));
+
+      setFeedbackMessage('Guess submitted successfully.');
+    } catch (error) {
+      console.error('Error submitting guess:', error);
+      setFeedbackMessage('An error occurred while submitting your guess.');
+    }
+
+    setUserAnswer('');
   };
+
+  useEffect(() => {
+    if (strikes >= maxStrikes && selectedQuestion) {
+      const allAnswers = selectedQuestion.answers.map((ans) => ans.text);
+      setRankedAnswers(allAnswers);
+    }
+  }, [strikes, maxStrikes, selectedQuestion]);
+
+  // Optional: Reset feedback message after a delay
+  useEffect(() => {
+    if (feedbackMessage !== '') {
+      const timer = setTimeout(() => {
+        setFeedbackMessage('');
+      }, 3000); // Clear message after 3 seconds
+      return () => clearTimeout(timer);
+    }
+  }, [feedbackMessage]);
 
   return (
     <div className="qotd-container">
       {selectedQuestion ? (
         <div className="qotd-question-section">
           <h2 className="qotd-heading">Question of the Day</h2>
-          <p className="qotd-date">{new Date().toLocaleDateString()}</p>
+          <p className="qotd-date">{new Date(selectedQuestion.dateAsked).toLocaleDateString()}</p>
           <p className="qotd-text">{selectedQuestion.text}</p>
 
           {/* Display Ranked Answers */}
@@ -200,7 +182,11 @@ function QuestionOfTheDay() {
           {/* Display Strikes */}
           <div className="qotd-strikes">
             <p>Strikes: {strikes} / {maxStrikes}</p>
-            {strikes >= maxStrikes && <p className="strike-warning">You have reached the maximum number of strikes.</p>}
+            {strikes >= maxStrikes && (
+              <p className="strike-warning">
+                You have reached the maximum number of strikes. All answers are revealed.
+              </p>
+            )}
           </div>
 
           {/* Answer Input */}
@@ -220,6 +206,8 @@ function QuestionOfTheDay() {
             </form>
           )}
 
+          {/* Feedback Message */}
+          {feedbackMessage && <p className="feedback-message">{feedbackMessage}</p>}
         </div>
       ) : (
         <div className="qotd-no-question">

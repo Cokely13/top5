@@ -1,44 +1,9 @@
-// const db = require('./db')
-
-// const Question = require('./models/Question');
-// const Answer = require('./models/Answer');
-// const UserScore = require('./models/UserScore')
-// const UserGuess = require('./models/UserGuess')
-// const User = require('./models/User')
-
-// //associations:
-
-// Question.hasMany(Answer, { as: 'answers' });
-// Answer.belongsTo(Question);
-
-// // Associations between User and UserScore
-// User.hasMany(UserScore);
-// UserScore.belongsTo(User);
-
-// User.belongsToMany(Question, { through: UserGuess });
-// Question.belongsToMany(User, { through: UserGuess });
-
-// UserGuess.belongsTo(User);
-// UserGuess.belongsTo(Question);
-
-
-// module.exports = {
-//   db,
-//   models: {
-//     User,
-//     Question,
-//     Answer,
-//     UserScore,
-//     UserGuess
-//   },
-// }
-
 const db = require('./db')
 
 const Question = require('./models/Question');
 const Answer = require('./models/Answer');
 const UserScore = require('./models/UserScore')
-const UserGuess = require('./models/UserGuess')
+const Guess = require('./models/Guess')
 const User = require('./models/User')
 
 // Associations:
@@ -50,11 +15,11 @@ Answer.belongsTo(Question);
 User.hasMany(UserScore);
 UserScore.belongsTo(User);
 
-User.belongsToMany(Question, { through: UserGuess });
-Question.belongsToMany(User, { through: UserGuess });
+User.belongsToMany(Question, { through: Guess });
+Question.belongsToMany(User, { through: Guess });
 
-UserGuess.belongsTo(User);
-UserGuess.belongsTo(Question);
+Guess.belongsTo(User);
+Guess.belongsTo(Question);
 
 module.exports = {
   db,
@@ -63,6 +28,6 @@ module.exports = {
     Question,
     Answer,
     UserScore,
-    UserGuess
+    Guess
   },
 }

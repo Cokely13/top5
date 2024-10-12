@@ -1,7 +1,7 @@
 const Sequelize = require('sequelize');
 const db = require('../db');
 
-const UserGuess = db.define('userGuess', {
+const Guess = db.define('Guess', {
   strikeCount: {
     type: Sequelize.INTEGER,
     allowNull: false,
@@ -14,4 +14,4 @@ const UserGuess = db.define('userGuess', {
   },
 });
 
-module.exports = UserGuess;
+module.exports = Guess;

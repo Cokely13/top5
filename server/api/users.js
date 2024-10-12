@@ -35,7 +35,7 @@ const upload = multer({
 router.get('/', async (req, res, next) => {
   try {
     const users = await User.findAll({
-      attributes: ['id', 'username', 'careerHighWinStreak', 'careerHighLossStreak', 'careerHighNoVoteStreak', 'admin', 'image', 'email'],
+      attributes: ['id', 'username', 'totalPoints', 'admin', 'image', 'email'],
       include: [
       ],
     });
@@ -103,7 +103,7 @@ router.post('/', upload.single('image'), async (req, res, next) => {
 router.get('/:id', async (req, res, next) => {
   try {
     const user = await User.findByPk(req.params.id, {
-      attributes: ['id', 'username', 'careerHighWinStreak', 'careerHighLossStreak', 'careerHighNoVoteStreak', 'admin', 'image', 'email'],
+      attributes: ['id', 'username', 'totalPoints', 'admin', 'image', 'email'],
     });
     res.json(user);
   } catch (err) {

@@ -28,15 +28,7 @@ const User = db.define('user', {
   password: {
     type: Sequelize.STRING,
   },
-  careerHighWinStreak: {
-    type: Sequelize.INTEGER,
-    defaultValue: 0,
-  },
-  careerHighLossStreak: {
-    type: Sequelize.INTEGER,
-    defaultValue: 0,
-  },
-  careerHighNoVoteStreak: {
+  totalPoints: {
     type: Sequelize.INTEGER,
     defaultValue: 0,
   },
