@@ -45,30 +45,7 @@ router.get('/', async (req, res, next) => {
   }
 });
 
-// router.put('/:id', async (req, res, next) => {
-//   try {
-//     const user = await User.findByPk(req.params.id);
-//     if (!user) {
-//       return res.status(404).send('User not found');
-//     }
 
-//     // Update user fields
-//     await user.update(req.body);
-
-//     // Return the updated user
-//     res.json(user);
-//   } catch (error) {
-//     next(error);
-//   }
-// });
-
-// router.post('/', async (req, res, next) => {
-//   try {
-//     res.status(201).send(await User.create(req.body));
-//   } catch (error) {
-//     next(error);
-//   }
-// });
 
 // Update user by ID with image upload to S3
 router.put('/:id', upload.single('image'), async (req, res, next) => {
@@ -102,8 +79,9 @@ router.post('/', upload.single('image'), async (req, res, next) => {
 
 router.get('/:id', async (req, res, next) => {
   try {
-    const user = await User.findByPk(req.params.id, {include: [ Guess
-    ],
+    const user = await User.findByPk(req.params.id, {include: [{
+      model: Guess,
+    }],
       attributes: ['id', 'username', 'totalPoints', 'admin', 'image', 'email'],
     });
 
