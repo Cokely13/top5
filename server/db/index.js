@@ -1,10 +1,48 @@
-const db = require('./db')
+// const db = require('./db')
+
+// const Question = require('./models/Question');
+// const Answer = require('./models/Answer');
+// const UserScore = require('./models/UserScore')
+// const Guess = require('./models/Guess')
+// const User = require('./models/User')
+
+// // Associations:
+
+
+// Question.hasMany(Answer, { as: 'answers' });
+// Answer.belongsTo(Question);
+
+// // Associations between User and UserScore
+// User.hasMany(UserScore);
+// UserScore.belongsTo(User);
+
+
+// User.hasMany(Guess, { foreignKey: 'userId' });
+// Guess.belongsTo(User, { foreignKey: 'userId' });
+
+// Question.hasMany(Guess, { foreignKey: 'questionId' });
+// Guess.belongsTo(Question, { foreignKey: 'questionId' });
+
+// module.exports = {
+//   db,
+//   models: {
+//     User,
+//     Question,
+//     Answer,
+//     UserScore,
+//     Guess
+//   },
+// }
+
+// index.js
+
+const db = require('./db');
 
 const Question = require('./models/Question');
 const Answer = require('./models/Answer');
-const UserScore = require('./models/UserScore')
-const Guess = require('./models/Guess')
-const User = require('./models/User')
+const UserScore = require('./models/UserScore');
+const Guess = require('./models/Guess');
+const User = require('./models/User');
 
 // Associations:
 
@@ -15,11 +53,12 @@ Answer.belongsTo(Question);
 User.hasMany(UserScore);
 UserScore.belongsTo(User);
 
-User.belongsToMany(Question, { through: Guess });
-Question.belongsToMany(User, { through: Guess });
+// One-to-Many Associations for Guesses
+User.hasMany(Guess, { foreignKey: 'userId' });
+Guess.belongsTo(User, { foreignKey: 'userId' });
 
-Guess.belongsTo(User);
-Guess.belongsTo(Question);
+Question.hasMany(Guess, { foreignKey: 'questionId' });
+Guess.belongsTo(Question, { foreignKey: 'questionId' });
 
 module.exports = {
   db,
@@ -30,4 +69,4 @@ module.exports = {
     UserScore,
     Guess
   },
-}
+};
