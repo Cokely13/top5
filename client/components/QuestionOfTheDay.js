@@ -19,6 +19,7 @@ function QuestionOfTheDay() {
   const [selectedQuestion, setSelectedQuestion] = useState(null);
   const [userAnswer, setUserAnswer] = useState('');
   const [createdGuess, setCreatedGuess] = useState([]);
+  const [fullAnswers, setFullAnswers] = useState(Array(10).fill(''))
   const [rankedAnswers, setRankedAnswers] = useState(Array(10).fill('')); // 10 blank slots
   const [strikes, setStrikes] = useState(0);
   const maxStrikes = 3; // Define maximum strikes allowed
@@ -50,10 +51,27 @@ function QuestionOfTheDay() {
     }
   }, [questions, dispatch]);
 
-  // const newRankedAnswers = Array(10).fill('__________');
-  // const fullAnswers = selectedQuestion ? selectedQuestion.answers.forEach((answer) => {
+  const newRankedAnswers = Array(10).fill('__________');
+  // const fullAnswers =  selectedQuestion.answers.forEach((answer) => {
   //   newRankedAnswers[answer.rank - 1] = answer.text;
-  // }) : 0
+  // })
+
+
+
+  useEffect(() => {
+    if (selectedQuestion && selectedQuestion.answers) {
+      const fullAnswers = Array(10).fill('');
+      selectedQuestion.answers.forEach((answer) => {
+        fullAnswers[answer.rank - 1] = answer.text;
+      });
+
+      console.log('sek', fullAnswers)
+      setFullAnswers(fullAnswers);
+    }
+  }, [selectedQuestion]);
+
+
+  console.log("full", fullAnswers)
 
   // const userAnswers = user.guess && user.guesses
   // .filter((guess) => guess.questionId === selectedQuestion.id && guess.rank !== null)
@@ -206,12 +224,16 @@ function QuestionOfTheDay() {
             <div className="qotd-ranked-answers">
   <h3>Ranked Answers:</h3>
   <div className="ranked-answers-list">
-    {rankedAnswers.map((answer, index) => (
+    {strikes < 3 ? rankedAnswers.map((answer, index) => (
       <div key={index} className="ranked-answer-item">
         <span className="rank-number">{index + 1}.</span>
         <span className="rank-answer">{answer}</span>
       </div>
-    ))}
+    )) : fullAnswers.map((answer, index) => (
+      <div key={index} className="ranked-answer-item">
+        <span className="rank-number">{index + 1}.</span>
+        <span className="rank-answer">{answer}</span>
+      </div>)) }
   </div>
 </div>
 
