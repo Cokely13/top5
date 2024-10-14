@@ -50,28 +50,19 @@ function QuestionOfTheDay() {
     }
   }, [questions, dispatch]);
 
-  useEffect(() => {
-    if (selectedQuestion && user && user.guesses) {
-      // Initialize rankedAnswers array with blank spaces.
-      const newRankedAnswers = Array(10).fill('__________');
-      console.log("user", user)
-      // If the user has 3 or more strikes, reveal all answers.
-      if (strikes >= 3) {
-        selectedQuestion.answers.forEach((answer) => {
-          newRankedAnswers[answer.rank - 1] = answer.text;
-        });
-      } else {
-        // Set correct guesses into their appropriate rank slots.
-        user.guesses
-          .filter((guess) => guess.questionId === selectedQuestion.id && guess.rank !== null)
-          .forEach((guess) => {
-            newRankedAnswers[guess.rank - 1] = guess.guess;
-          });
-      }
+  // const newRankedAnswers = Array(10).fill('__________');
+  // const fullAnswers = selectedQuestion ? selectedQuestion.answers.forEach((answer) => {
+  //   newRankedAnswers[answer.rank - 1] = answer.text;
+  // }) : 0
 
-      setRankedAnswers(newRankedAnswers);
-    }
-  }, [selectedQuestion, user, strikes]);
+  // const userAnswers = user.guess && user.guesses
+  // .filter((guess) => guess.questionId === selectedQuestion.id && guess.rank !== null)
+  // .forEach((guess) => {
+  //   newRankedAnswers[guess.rank - 1] = guess.guess;
+  // });
+
+  // setRankedAnswers(newRankedAnswers);
+
 
   // Update ranked answers and strikes based on user guesses
   useEffect(() => {
@@ -108,65 +99,7 @@ function QuestionOfTheDay() {
     }
   }, [user, selectedQuestion]);
 
-  // Handle submitting a new guess
-  // const handleSubmit = async (e) => {
-  //   e.preventDefault();
-  //   if (!selectedQuestion) return;
 
-  //   console.log("user", userAnswer)
-
-  //   const trimmedAnswer = userAnswer.trim().toLowerCase();
-  //   if (trimmedAnswer === '') {
-  //     setFeedbackMessage('Please enter a valid answer.');
-  //     return;
-  //   }
-
-  //   try {
-  //     // Dispatch createGuess and wait for the created guess
-  //     const createdGuess = await dispatch(
-  //       createGuess({
-  //         guess: trimmedAnswer,
-  //         userId: userId,
-  //         questionId: selectedQuestion.id,
-  //       })
-  //     );
-
-  //     console.log("selected", selectedQuestion)
-
-  //     if (createdGuess) {
-
-  //       console.log("Created!!")
-  //       const matchedAnswer = selectedQuestion.answers.text.find(
-  //         (ans) => ans.text.toLowerCase() === createdGuess.guess.toLowerCase()
-  //       );
-
-
-
-  //       if (matchedAnswer) {
-  //         // Correct guess, update feedback and ranked answers.
-  //         // setFeedbackMessage(`Correct! You earned ${createdGuess.pointsEarned} points.`);
-  //         console.log("got one!",matchedAnswer )
-  //       } else {
-  //         console.log("NOPE!!")
-  //         // Incorrect guess, increment strikes.
-  //         setStrikes((prevStrikes) => {
-  //           const updatedStrikes = prevStrikes + 1;
-  //           if (updatedStrikes >= maxStrikes) {
-  //             setFeedbackMessage('You have reached the maximum number of strikes. All answers are revealed.');
-  //           } else {
-  //             setFeedbackMessage(`Incorrect. You have ${updatedStrikes} strike(s).`);
-  //           }
-  //           return updatedStrikes;
-  //         });
-  //       }
-  //     }
-  //   } catch (error) {
-  //     console.error('Error submitting guess:', error);
-  //     setFeedbackMessage('An error occurred while submitting your guess.');
-  //   }
-
-  //   setUserAnswer('');
-  // };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -207,7 +140,6 @@ function QuestionOfTheDay() {
         if (matchedAnswer) {
           // Correct guess, update feedback and ranked answers.
           console.log("got one!", matchedAnswer);
-          setFeedbackMessage(`Correct! You earned ${createdGuess.pointsEarned} points.`);
 
           // Update ranked answers with the correct answer
           const rankIndex = matchedAnswer.rank - 1;
