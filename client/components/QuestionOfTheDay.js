@@ -20,6 +20,7 @@ function QuestionOfTheDay() {
   const [strikes, setStrikes] = useState(0);
   const maxStrikes = 3;
   const [feedbackMessage, setFeedbackMessage] = useState('');
+  const [allAnswersGuessed, setAllAnswersGuessed] = useState(false);
 
   // Fetch data on mount
   useEffect(() => {
@@ -79,6 +80,10 @@ function QuestionOfTheDay() {
       if (newStrikes >= maxStrikes) {
         setRankedAnswers(fullAnswers);
       }
+
+      // Check if all answers have been guessed
+      const allGuessed = newRankedAnswers.every((answer) => answer !== '__________');
+      setAllAnswersGuessed(allGuessed);
     }
   }, [user, selectedQuestion, fullAnswers]);
 
@@ -115,7 +120,7 @@ function QuestionOfTheDay() {
       );
 
       // Re-fetch the user's data to update guesses
-      dispatch(fetchSingleUser(userId));
+      await dispatch(fetchSingleUser(userId));
 
       setUserAnswer('');
     } catch (error) {
@@ -161,7 +166,7 @@ function QuestionOfTheDay() {
             </div>
 
             {/* Answer Input */}
-            {strikes < maxStrikes && (
+            {!allAnswersGuessed && strikes < maxStrikes ? (
               <form onSubmit={handleSubmit} className="qotd-answer-form">
                 <label htmlFor="userAnswer">Enter your answer:</label>
                 <input
@@ -177,7 +182,9 @@ function QuestionOfTheDay() {
                   Submit
                 </button>
               </form>
-            )}
+            ) : allAnswersGuessed ? (
+              <p className="congrats-message">Congrats! You Got All the Answers!</p>
+            ) : null}
 
             {/* Feedback Message */}
             {feedbackMessage && <p className="feedback-message">{feedbackMessage}</p>}
@@ -193,4 +200,3 @@ function QuestionOfTheDay() {
 }
 
 export default QuestionOfTheDay;
-
