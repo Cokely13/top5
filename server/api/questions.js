@@ -1,7 +1,7 @@
 
 
 const router = require('express').Router();
-const { models: { Question, Answer }} = require('../db');
+const { models: { Question, Answer, Guess }} = require('../db');
 const { S3Client } = require('@aws-sdk/client-s3'); // AWS SDK v3
 const multer = require('multer');
 const multerS3 = require('multer-s3');
@@ -35,8 +35,9 @@ router.get('/', async (req, res, next) => {
     const questions = await Question.findAll({
       include: [{
         model: Answer,
-        as: 'answers' // Must match the alias defined in the association
-      }]
+        as: 'answers'
+         // Must match the alias defined in the association
+      }, Guess]
     });
     res.json(questions);
   } catch (err) {
@@ -97,7 +98,7 @@ router.get('/:id', async (req, res, next) => {
       include: [{
         model: Answer,
         as: 'answers' // Must match the alias defined in the association
-      }]
+      }, Guess]
     });
     res.json(question);
   } catch (err) {
