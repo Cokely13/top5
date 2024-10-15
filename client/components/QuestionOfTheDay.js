@@ -1,215 +1,128 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchQuestions } from '../store/allQuestionsStore';
-import { fetchUsers } from '../store/allUsersStore';
 import { fetchSingleUser } from '../store/singleUserStore';
-import { fetchGuesses, createGuess } from '../store/allGuessesStore';
+import { createGuess } from '../store/allGuessesStore';
 
 function QuestionOfTheDay() {
   const dispatch = useDispatch();
 
   // Selectors
   const questions = useSelector((state) => state.allQuestions || []);
-  const users = useSelector((state) => state.allUsers || []);
-  const { id: userId } = useSelector((state) => state.auth); // Ensure userId is available
+  const { id: userId } = useSelector((state) => state.auth);
   const user = useSelector((state) => state.singleUser);
-  const guesses = useSelector((state) => state.guesses || []);
 
   // Local State
   const [selectedQuestion, setSelectedQuestion] = useState(null);
   const [userAnswer, setUserAnswer] = useState('');
-  const [createdGuess, setCreatedGuess] = useState([]);
-  const [fullAnswers, setFullAnswers] = useState(Array(10).fill(''))
-  const [rankedAnswers, setRankedAnswers] = useState(Array(10).fill('')); // 10 blank slots
+  const [fullAnswers, setFullAnswers] = useState(Array(10).fill('__________'));
+  const [rankedAnswers, setRankedAnswers] = useState(Array(10).fill('__________'));
   const [strikes, setStrikes] = useState(0);
-  const maxStrikes = 3; // Define maximum strikes allowed
+  const maxStrikes = 3;
   const [feedbackMessage, setFeedbackMessage] = useState('');
 
-  // Fetch all necessary data on component mount
+  // Fetch data on mount
   useEffect(() => {
     dispatch(fetchQuestions());
-    dispatch(fetchUsers());
     if (userId) {
       dispatch(fetchSingleUser(userId));
     }
   }, [dispatch, userId]);
 
-  // Set the selected question and fetch guesses for that question
+  // Set selected question
   useEffect(() => {
     if (questions.length > 0) {
-      // Select today's question based on dateAsked
       const todayDate = new Date().toISOString().split('T')[0];
-      const todayQuestion = questions.find(
-        (q) => q.dateAsked === todayDate
-      ) || questions[0]; // Fallback to the first question
+      const todayQuestion =
+        questions.find((q) => q.dateAsked === todayDate) || questions[0];
       setSelectedQuestion(todayQuestion);
-
-      // Fetch all guesses for the question
-      if (todayQuestion) {
-        dispatch(fetchGuesses());
-      }
     }
-  }, [questions, dispatch]);
+  }, [questions]);
 
-  const newRankedAnswers = Array(10).fill('__________');
-  // const fullAnswers =  selectedQuestion.answers.forEach((answer) => {
-  //   newRankedAnswers[answer.rank - 1] = answer.text;
-  // })
-
-
-
+  // Set full answers
   useEffect(() => {
     if (selectedQuestion && selectedQuestion.answers) {
-      const fullAnswers = Array(10).fill('');
+      const answersArray = Array(10).fill('__________');
       selectedQuestion.answers.forEach((answer) => {
-        fullAnswers[answer.rank - 1] = answer.text;
+        answersArray[answer.rank - 1] = answer.text;
       });
-
-      console.log('sek', fullAnswers)
-      setFullAnswers(fullAnswers);
+      setFullAnswers(answersArray);
     }
   }, [selectedQuestion]);
 
-
-  console.log("full", fullAnswers)
-
-  // const userAnswers = user.guess && user.guesses
-  // .filter((guess) => guess.questionId === selectedQuestion.id && guess.rank !== null)
-  // .forEach((guess) => {
-  //   newRankedAnswers[guess.rank - 1] = guess.guess;
-  // });
-
-  // setRankedAnswers(newRankedAnswers);
-
-
-  // Update ranked answers and strikes based on user guesses
+  // Reconstruct rankedAnswers and strikes
   useEffect(() => {
-    if (selectedQuestion && user && user.guesses && selectedQuestion.answers) {
-      // Filter guesses for the current question
-
-      console.log("user!!!", user)
-      const userGuesses = user.guesses.filter(
+    if (selectedQuestion && user && user.Guesses && selectedQuestion.answers) {
+      const userGuesses = user.Guesses.filter(
         (guess) => guess.questionId === selectedQuestion.id
       );
 
-      // Initialize rankedAnswers and strikes
-      const newRankedAnswers = Array(10).fill('');
+      const newRankedAnswers = Array(10).fill('__________');
       let newStrikes = 0;
 
       userGuesses.forEach((guess) => {
-        // Check if the guess is correct
         const matchedAnswer = selectedQuestion.answers.find(
           (ans) => ans.text.toLowerCase() === guess.guess.toLowerCase()
         );
 
         if (matchedAnswer) {
-          // Place the correct answer in the ranked position
           const rankIndex = matchedAnswer.rank - 1;
           newRankedAnswers[rankIndex] = matchedAnswer.text;
         } else {
-          // If incorrect, accumulate strikes
           newStrikes += 1;
         }
       });
 
       setRankedAnswers(newRankedAnswers);
       setStrikes(newStrikes);
+
+      if (newStrikes >= maxStrikes) {
+        setRankedAnswers(fullAnswers);
+      }
     }
-  }, [user, selectedQuestion]);
-
-
+  }, [user, selectedQuestion, fullAnswers]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!selectedQuestion) return;
 
-    console.log("user", userAnswer);
-
-    const trimmedAnswer = userAnswer.trim().toLowerCase();
+    const trimmedAnswer = userAnswer.trim();
     if (trimmedAnswer === '') {
       setFeedbackMessage('Please enter a valid answer.');
       return;
     }
 
+    // Check if the user has already guessed this answer
+    const existingGuess = user.Guesses.find(
+      (guess) =>
+        guess.questionId === selectedQuestion.id &&
+        guess.guess.toLowerCase() === trimmedAnswer.toLowerCase()
+    );
+
+    if (existingGuess) {
+      setFeedbackMessage('You have already guessed this answer.');
+      return;
+    }
 
     try {
       // Dispatch createGuess and wait for the created guess
-      const createdGuess ={guess: trimmedAnswer,
+      await dispatch(
+        createGuess({
           guess: trimmedAnswer,
           userId: userId,
-          questionId: selectedQuestion.id}
+          questionId: selectedQuestion.id,
+        })
+      );
 
+      // Re-fetch the user's data to update guesses
+      dispatch(fetchSingleUser(userId));
 
-      console.log("selected", selectedQuestion);
-
-      // Log the response to see what exactly is returned
-
-
-
-
-      if (createdGuess) {
-        console.log("Created!!");
-
-        // Correctly find the matched answer from selectedQuestion.answers
-        const matchedAnswer = selectedQuestion.answers.find(
-          (ans) => ans.text.toLowerCase() === createdGuess.guess.toLowerCase()
-        );
-
-        if (matchedAnswer) {
-          // Correct guess, update feedback and ranked answers.
-          console.log("got one!", matchedAnswer);
-
-          // Update ranked answers with the correct answer
-          const rankIndex = matchedAnswer.rank - 1;
-          setRankedAnswers((prev) => {
-            const updated = [...prev];
-            updated[rankIndex] = matchedAnswer.text;
-            return updated;
-          });
-        } else {
-          console.log("NOPE!!");
-          // Incorrect guess, increment strikes.
-          setStrikes((prevStrikes) => {
-            const updatedStrikes = prevStrikes + 1;
-            if (updatedStrikes >= maxStrikes) {
-              setFeedbackMessage('You have reached the maximum number of strikes. All answers are revealed.');
-            } else {
-              setFeedbackMessage(`Incorrect. You have ${updatedStrikes} strike(s).`);
-            }
-            return updatedStrikes;
-          });
-        }
-      } else {
-        console.error('No created guess found.');
-      }
+      setUserAnswer('');
     } catch (error) {
       console.error('Error submitting guess:', error);
       setFeedbackMessage('An error occurred while submitting your guess.');
     }
-
-    const createdGuessResponse = await dispatch(
-      createGuess({
-        guess: trimmedAnswer,
-        userId: userId,
-        questionId: selectedQuestion.id,
-      })
-    );
-
-    setUserAnswer('');
   };
-
-
-
-
-  // Optional: Reset feedback message after a delay
-  useEffect(() => {
-    if (feedbackMessage !== '') {
-      const timer = setTimeout(() => {
-        setFeedbackMessage('');
-      }, 3000); // Clear message after 3 seconds
-      return () => clearTimeout(timer);
-    }
-  }, [feedbackMessage]);
 
   return (
     <div className="qotd-container">
@@ -217,29 +130,29 @@ function QuestionOfTheDay() {
         <>
           <div className="qotd-question-section">
             <h2 className="qotd-heading">Question of the Day</h2>
-            <p className="qotd-date">{new Date(selectedQuestion.dateAsked).toLocaleDateString()}</p>
+            <p className="qotd-date">
+              {new Date(selectedQuestion.dateAsked).toLocaleDateString()}
+            </p>
             <p className="qotd-text">{selectedQuestion.text}</p>
 
             {/* Display Ranked Answers */}
             <div className="qotd-ranked-answers">
-  <h3>Ranked Answers:</h3>
-  <div className="ranked-answers-list">
-    {strikes < 3 ? rankedAnswers.map((answer, index) => (
-      <div key={index} className="ranked-answer-item">
-        <span className="rank-number">{index + 1}.</span>
-        <span className="rank-answer">{answer}</span>
-      </div>
-    )) : fullAnswers.map((answer, index) => (
-      <div key={index} className="ranked-answer-item">
-        <span className="rank-number">{index + 1}.</span>
-        <span className="rank-answer">{answer}</span>
-      </div>)) }
-  </div>
-</div>
+              <h3>Ranked Answers:</h3>
+              <div className="ranked-answers-list">
+                {rankedAnswers.map((answer, index) => (
+                  <div key={index} className="ranked-answer-item">
+                    <span className="rank-number">{index + 1}.</span>
+                    <span className="rank-answer">{answer}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
 
             {/* Display Strikes */}
             <div className="qotd-strikes">
-              <p>Strikes: {strikes} / {maxStrikes}</p>
+              <p>
+                Strikes: {strikes} / {maxStrikes}
+              </p>
               {strikes >= maxStrikes && (
                 <p className="strike-warning">
                   You have reached the maximum number of strikes. All answers are revealed.
@@ -260,14 +173,15 @@ function QuestionOfTheDay() {
                   className="qotd-answer-input"
                   placeholder="Type your answer here..."
                 />
-                <button type="submit" className="qotd-submit-button">Submit</button>
+                <button type="submit" className="qotd-submit-button">
+                  Submit
+                </button>
               </form>
             )}
 
             {/* Feedback Message */}
             {feedbackMessage && <p className="feedback-message">{feedbackMessage}</p>}
           </div>
-
         </>
       ) : (
         <div className="qotd-no-question">
@@ -279,3 +193,4 @@ function QuestionOfTheDay() {
 }
 
 export default QuestionOfTheDay;
+
