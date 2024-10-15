@@ -90,32 +90,6 @@ const Navbar = ({ handleClick, isLoggedIn, isAdmin }) => {
                 </ul>
               </li>
 
-              {/* Groups Dropdown */}
-              <li
-                className={`nav-item dropdown ${activeDropdown === 'groups' ? 'active' : ''}`}
-                onMouseEnter={() => {
-                  if (window.innerWidth > 768) {
-                    setActiveDropdown('groups');
-                  }
-                }}
-                onMouseLeave={() => {
-                  if (window.innerWidth > 768) {
-                    setActiveDropdown(null);
-                  }
-                }}
-              >
-                <span
-                  className="nav-link"
-                  onClick={() => {
-                    if (window.innerWidth <= 768) {
-                      toggleDropdown('groups');
-                    }
-                  }}
-                >
-                  Groups <i className="fas fa-caret-down"></i>
-                </span>
-              </li>
-
               {/* Questions Dropdown */}
               <li
                 className={`nav-item dropdown ${activeDropdown === 'questions' ? 'active' : ''}`}
