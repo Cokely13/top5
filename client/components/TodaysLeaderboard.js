@@ -1,9 +1,22 @@
 // components/TodaysLeaderboard.js
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import {fetchUsers} from '../store/allUsersStore'
 // import './TodaysLeaderboard.css'; // Import the CSS file for styling
 
 function TodaysLeaderboard() {
+  const dispatch = useDispatch();
+  const users = useSelector((state) => state.allUsers);
+
+
+
+  useEffect(() => {
+    dispatch(fetchUsers());
+  }, [dispatch]);
+
+  console.log("users", users)
+
   // Dummy data for the leaderboard
   const leaderboardData = [
     { userName: 'Alice', rank: 1, points: 150 },
