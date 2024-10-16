@@ -347,11 +347,30 @@
   transition: background-color 0.3s, border-color 0.3s;
 }
 
+.rank-answer-bubble.guessed {
+  background-color: #007bff; /* Blue */
+  color: #fff;
+  border-color: #007bff;
+}
+
 .rank-answer-bubble.filled {
   background-color: #007bff;
   color: #fff;
   border-color: #007bff;
   animation: fillBubble 0.5s ease-in-out;
+}
+
+.rank-answer-bubble.revealed {
+  background-color: #6c757d; /* Gray */
+  color: #fff;
+  border-color: #6c757d;
+}
+
+/* Empty Answers */
+.rank-answer-bubble.empty {
+  background-color: #f9f9f9;
+  color: transparent;
+  border-style: dashed;
 }
 
 @keyframes fillBubble {
