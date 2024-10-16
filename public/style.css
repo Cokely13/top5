@@ -284,38 +284,73 @@
   color: #555;
 }
 
+/* Center the ranked answers list */
 .ranked-answers-list {
   display: flex;
-  flex-direction: column; /* Stack items vertically */
-  align-items: center;    /* Center items horizontally */
+  flex-wrap: wrap;
+  justify-content: center;
 }
 
+/* Ranked Answer Item */
 .ranked-answer-item {
-  width: 48%;
-  background-color: #f9f9f9;
-  margin-bottom: 15px;
-  padding: 15px 20px;
-  border-radius: 5px;
+  width: 100%;
+  max-width: 400px;
+  margin: 10px;
   display: flex;
   align-items: center;
 }
 
 .rank-number {
   font-weight: bold;
-  margin-right: 15px;
+  margin-right: 10px;
   color: #007bff;
   font-size: 1.2em;
 }
 
-.rank-answer {
+/* Answer Bubble */
+.rank-answer-bubble {
+  flex-grow: 1;
+  padding: 15px 20px;
+  border-radius: 25px;
+  text-align: center;
   font-size: 1.1em;
   color: #333;
+  border: 2px solid #ccc;
+  background-color: #f9f9f9;
+  transition: background-color 0.3s, border-color 0.3s;
 }
 
+.rank-answer-bubble.filled {
+  background-color: #007bff;
+  color: #fff;
+  border-color: #007bff;
+  animation: fillBubble 0.5s ease-in-out;
+}
+
+@keyframes fillBubble {
+  from {
+    background-color: #f9f9f9;
+    color: transparent;
+  }
+  to {
+    background-color: #007bff;
+    color: #fff;
+  }
+}
+
+.rank-answer-bubble.empty {
+  background-color: #f9f9f9;
+  color: transparent;
+  border-style: dashed;
+}
 .qotd-user-score {
   font-size: 1.2em;
   margin-bottom: 20px;
   text-align: center;
+  padding: 15px;
+  border: 2px solid #28a745; /* Green border */
+  border-radius: 8px;
+  background-color: #e9f7ef; /* Light green background */
 }
 
 .qotd-user-score p {
@@ -326,27 +361,16 @@
   color: #28a745; /* Green color to indicate positive score */
 }
 
-/* .qotd-user-score,
-.qotd-strikes {
-  font-size: 1.1em;
-  margin-bottom: 15px;
-  text-align: center;
-}
 
-.qotd-user-score p,
-.qotd-strikes p {
-  margin: 0;
-}
-
-.qotd-strikes .strike-warning {
-  color: #d9534f;
-  margin-top: 10px;
-} */
 
 .qotd-strikes {
   font-size: 1.2em;
   margin-bottom: 20px;
   text-align: center;
+  padding: 15px;
+  border: 2px solid #dc3545; /* Red border */
+  border-radius: 8px;
+  background-color: #f8d7da; /* Light red background */
 }
 
 .qotd-strikes p {
