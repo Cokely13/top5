@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchQuestions } from '../store/allQuestionsStore';
 import { fetchSingleUser } from '../store/singleUserStore';
@@ -23,6 +23,8 @@ function QuestionOfTheDay() {
   const [feedbackMessage, setFeedbackMessage] = useState('');
   const [allAnswersGuessed, setAllAnswersGuessed] = useState(false);
   const [userScore, setUserScore] = useState(0);
+  const [showRedX, setShowRedX] = useState(false);
+  const timeoutIdRef = useRef(null);
 
   // Fetch data on mount
   useEffect(() => {
@@ -105,6 +107,10 @@ function QuestionOfTheDay() {
       return;
     }
 
+    const isCorrect = selectedQuestion.answers.some(
+      (ans) => ans.text.toLowerCase() === trimmedAnswer.toLowerCase()
+    );
+
     // Check if the user has already guessed this answer
     const existingGuess = user.Guesses.find(
       (guess) =>
@@ -130,6 +136,17 @@ function QuestionOfTheDay() {
       // Re-fetch the user's data to update guesses
       await dispatch(fetchSingleUser(userId));
 
+      if (!isCorrect) {
+        setShowRedX(true);
+        // Clear any existing timeout
+        if (timeoutIdRef.current) {
+          clearTimeout(timeoutIdRef.current);
+        }
+        timeoutIdRef.current = setTimeout(() => {
+          setShowRedX(false);
+        }, 3000);
+      }
+
       setUserAnswer('');
     } catch (error) {
       console.error('Error submitting guess:', error);
@@ -137,13 +154,27 @@ function QuestionOfTheDay() {
     }
   };
 
+  useEffect(() => {
+    return () => {
+      if (timeoutIdRef.current) {
+        clearTimeout(timeoutIdRef.current);
+      }
+    };
+  }, []);
+
   return (
     <div className="qotd-container">
+       {showRedX && (
+      <div className="red-x-overlay">
+        <div className="red-x">X</div>
+      </div>
+    )}
       {selectedQuestion ? (
         <>
           <div className="qotd-question-section">
             <h2 className="qotd-heading">Top 10</h2>
             <p className="qotd-date">
+            <i className="fas fa-calendar-alt" style={{ marginRight: '10px' }}></i>
               {(() => {
                 const [year, month, day] = selectedQuestion.dateAsked
                   .split('-')

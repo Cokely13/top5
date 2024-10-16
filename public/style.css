@@ -258,11 +258,38 @@
   color: #222;
 }
 
-.qotd-date {
+/* .qotd-date {
   font-size: 1em;
   color: #777;
   text-align: center;
   margin-bottom: 20px;
+} */
+
+.qotd-date {
+  position: relative;
+  font-size: 1.8em;
+  font-weight: 600;
+  color: #124e66;
+  text-align: center;
+  margin: 0;
+  padding: 10px 20px;
+  border-radius: 10px;
+  background: linear-gradient(#fff, #fff) padding-box,
+              linear-gradient(to right, #124e66, #00aaff) border-box;
+  border: 3px solid transparent;
+}
+
+.qotd-date-container {
+  display: flex;
+  /* text-align: center; */
+  justify-content: center; /* Centers the date horizontally */
+  margin-bottom: 20px; /* Space below the date */
+}
+
+/* Optional: Icon styles */
+.qotd-date i {
+  color: #555;
+  margin-right: 8px;
 }
 
 .qotd-text {
@@ -387,7 +414,7 @@
   font-size: 1em;
 }
 
-.qotd-answer-form {
+/* .qotd-answer-form {
   margin-bottom: 20px;
   text-align: center;
 }
@@ -436,7 +463,63 @@
 
 .qotd-submit-button:hover {
   background-color: #0056b3;
+} */
+
+/* Answer Form */
+.qotd-answer-form {
+  margin-bottom: 20px;
+  text-align: center;
+  padding: 20px;
+  border: 2px solid #007bff;
+  border-radius: 8px;
+  background-color: #e9f5ff;
 }
+
+.qotd-answer-form label {
+  display: block;
+  font-size: 1em;
+  margin-bottom: 8px;
+  color: #333;
+  font-weight: bold;
+}
+
+.input-group {
+  display: flex;
+  justify-content: center;
+  align-items: stretch;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.qotd-answer-input {
+  flex-grow: 1;
+  padding: 12px;
+  font-size: 1em;
+  border: 1px solid #ced4da;
+  border-right: none;
+  border-radius: 4px 0 0 4px;
+  outline: none;
+}
+
+.qotd-answer-input:focus {
+  border-color: #80bdff;
+}
+
+.qotd-submit-button {
+  padding: 0 20px;
+  font-size: 1em;
+  background-color: #007bff;
+  border: 1px solid #007bff;
+  color: #fff;
+  border-radius: 0 4px 4px 0;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.qotd-submit-button:hover {
+  background-color: #0056b3;
+}
+
 
 .feedback-message {
   color: #d9534f;
@@ -558,4 +641,30 @@
   .leaderboard-table td {
     padding: 8px 10px;
   }
+}
+
+/* Red X Overlay */
+.red-x-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999; /* Ensure it overlays other content */
+}
+
+.red-x {
+  font-size: 200px;
+  color: red;
+  font-weight: bold;
+  animation: fadeOut 3s forwards;
+}
+
+@keyframes fadeOut {
+  0% { opacity: 1; }
+  100% { opacity: 0; }
 }
