@@ -13,6 +13,7 @@ import QuestionReview from './components/QuestionReview';
 import EditQuestion from './components/EditQuestion';
 import TodaysLeaderboard from './components/TodaysLeaderboard';
 import CareerLeaderboard from './components/CareerLeaderboard';
+import Archive from './components/Archive';
 
 /**
  * COMPONENT
@@ -35,6 +36,7 @@ class Routes extends Component {
             <Route exact path="/users/:userId" component={UserDetailPage} />
             <Route exact path="/questions" component={Questions} />
             <Route exact path="/leaderboard" component={TodaysLeaderboard} />
+            <Route exact path="/archive" component={Archive} />
             <Route exact path="/career" component={CareerLeaderboard} />
             <Route exact path="/create" component={CreateQuestion} />
             <Route exact path="/review" component={QuestionReview} />
