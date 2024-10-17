@@ -471,27 +471,7 @@ function QuestionOfTheDay() {
               </div>
             </div>
 
-            {/* Display User Score */}
-            <div className="qotd-user-score">
-              <p>
-                <i className="fas fa-star"></i> Your Score: <strong>{userScore}</strong>
-              </p>
-            </div>
 
-            {/* Display Strikes */}
-            <div className="qotd-strikes">
-              <p>
-                <i className="fas fa-times-circle"></i> Strikes:{' '}
-                <strong>
-                  {strikes} / {maxStrikes}
-                </strong>
-              </p>
-              {strikes >= maxStrikes && (
-                <p className="strike-warning">
-                  You have reached the maximum number of strikes. All answers are revealed.
-                </p>
-              )}
-            </div>
 
             {/* Answer Input */}
             {!allAnswersGuessed && strikes < maxStrikes ? (
@@ -517,6 +497,27 @@ function QuestionOfTheDay() {
             ) : null}
 
             {/* Feedback Message */}
+               {/* Display User Score */}
+               <div className="qotd-user-score">
+              <p>
+                <i className="fas fa-star"></i> Your Score: <strong>{userScore}</strong>
+              </p>
+            </div>
+
+            {/* Display Strikes */}
+            <div className="qotd-strikes">
+              <p>
+                <i className="fas fa-times-circle"></i> Strikes:{' '}
+                <strong>
+                  {strikes} / {maxStrikes}
+                </strong>
+              </p>
+              {strikes >= maxStrikes && (
+                <p className="strike-warning">
+                  You have reached the maximum number of strikes. All answers are revealed.
+                </p>
+              )}
+            </div>
             {feedbackMessage && <p className="feedback-message">{feedbackMessage}</p>}
           </div>
         </>

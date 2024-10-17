@@ -50,6 +50,7 @@ async function seed() {
       text: 'What is the most popular color?',
       dateAsked: today,
       createdBy: users[0].id,
+      category: 'Other',
       answers: [
         'Blue',
         'Red',
@@ -67,6 +68,7 @@ async function seed() {
       text: 'What are the most popular board games?',
       dateAsked: addDays(today, 1),
       createdBy: users[0].id,
+      category: 'Entertainment',
       answers: [
         'Chess',
         'Monopoly',
@@ -84,6 +86,7 @@ async function seed() {
       text: 'What are the most popular sneaker brands?',
       dateAsked: addDays(today, 2),
       createdBy: users[0].id,
+      category: 'Other',
       answers: [
         'Nike',
         'Adidas',
@@ -101,6 +104,7 @@ async function seed() {
       text: 'What are the best-selling car brands?',
       dateAsked: addDays(today, 3),
       createdBy: users[0].id,
+      category: 'Other',
       answers: [
         'Toyota',
         'Volkswagen',
@@ -118,6 +122,7 @@ async function seed() {
       text: 'What are the most popular fast food restaurants?',
       dateAsked: addDays(today, 4),
       createdBy: users[0].id,
+      category: 'Food',
       answers: [
         "McDonald's",
         'Starbucks',
@@ -135,6 +140,7 @@ async function seed() {
       text: 'What are the most popular kinds of soup?',
       dateAsked: addDays(today, 5),
       createdBy: users[0].id,
+      category: 'Food',
       answers: [
         'Chicken Noodle',
         'Tomato',
@@ -152,6 +158,7 @@ async function seed() {
       text: 'What are the most popular kinds of sandwiches?',
       dateAsked: addDays(today, 6),
       createdBy: users[0].id,
+      category: 'Food',
       answers: [
         'Hamburger',
         'Club Sandwich',
@@ -169,6 +176,7 @@ async function seed() {
       text: 'What are the most popular sodas?',
       dateAsked: addDays(today, 7),
       createdBy: users[0].id,
+      category: 'Food',
       answers: [
         'Coca-Cola',
         'Pepsi',
@@ -186,6 +194,7 @@ async function seed() {
       text: 'What are the most popular brands of chips?',
       dateAsked: addDays(today, 8),
       createdBy: users[0].id,
+      category: 'Food',
       answers: [
         "Lay's",
         'Doritos',
@@ -203,6 +212,7 @@ async function seed() {
       text: 'What are the most popular candy bars?',
       dateAsked: addDays(today, 9),
       createdBy: users[0].id,
+      category: 'Food',
       answers: [
         'Snickers',
         "M&M's",
@@ -220,6 +230,7 @@ async function seed() {
       text: 'What are the most popular sports?',
       dateAsked: addDays(today, 10),
       createdBy: users[0].id,
+      category: 'Sports',
       answers: [
         'Soccer',
         'Cricket',
@@ -237,6 +248,7 @@ async function seed() {
       text: 'What are the most populous U.S. states?',
       dateAsked: addDays(today, 11),
       createdBy: users[0].id,
+      category: 'Places',
       answers: [
         'California',
         'Texas',
@@ -254,6 +266,7 @@ async function seed() {
       text: 'What are the most populous countries?',
       dateAsked: addDays(today, 12),
       createdBy: users[0].id,
+      category: 'Places',
       answers: [
         'China',
         'India',
@@ -271,6 +284,7 @@ async function seed() {
       text: 'What are the most popular tourist sites in the USA?',
       dateAsked: addDays(today, 13),
       createdBy: users[0].id,
+      category: 'Places',
       answers: [
         'Times Square',
         'Central Park',
@@ -288,6 +302,7 @@ async function seed() {
       text: 'What are the best bachelor party cities?',
       dateAsked: addDays(today, 14),
       createdBy: users[0].id,
+      category: 'Places',
       answers: [
         'Las Vegas',
         'Miami',
@@ -305,6 +320,7 @@ async function seed() {
       text: 'What are the top college football programs?',
       dateAsked: addDays(today, 15),
       createdBy: users[0].id,
+      category: 'Sports',
       answers: [
         'Alabama',
         'Ohio State',
@@ -322,6 +338,7 @@ async function seed() {
       text: 'What are the most popular flowers?',
       dateAsked: addDays(today, 16),
       createdBy: users[0].id,
+      category: 'Other',
       answers: [
         'Rose',
         'Tulip',

@@ -362,9 +362,10 @@ function Profile() {
       .map((q) => new Date(q.dateAsked))
       .reduce((latest, current) => (current > latest ? current : latest), firstAnsweredDate);
     const currentDate = new Date();
-    const diffTime = Math.abs(currentDate - mostRecentWin);
-    return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-  };
+    let diffTime = Math.abs(currentDate - mostRecentWin);
+    let streak = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) - 1;
+    return streak < 0 ? 0 : streak;
+};
 
   return (
     <div className="profile-container">

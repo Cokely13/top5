@@ -21,7 +21,7 @@ const Question = db.define('question', {
     defaultValue: false,
   },
   category: {
-    type: Sequelize.ENUM('Sports', 'Movies', 'Music', 'Food', 'Places', 'Other'),
+    type: Sequelize.ENUM('Sports','Food', 'Places', 'Entertainment', 'Other'),
     defaultValue: 'Other',
   },
   dailyWinnerId: {
