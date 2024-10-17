@@ -1,5 +1,6 @@
 const Sequelize = require('sequelize');
 const db = require('../db');
+const User = require('./User');
 
 const Question = db.define('question', {
   text: {
@@ -19,14 +20,17 @@ const Question = db.define('question', {
     allowNull: false,
     defaultValue: false,
   },
-  createdBy: {
-    type: Sequelize.INTEGER,
-    allowNull: true,
+  category: {
+    type: Sequelize.ENUM('Sports', 'Movies', 'Music', 'Food', 'Places', 'Other'),
+    defaultValue: 'Other',
   },
-  status: {
-    type: Sequelize.ENUM('waiting', 'accepted', 'rejected'),
-    allowNull: false,
-    defaultValue: 'waiting',
+  dailyWinnerId: {
+    type: Sequelize.INTEGER,
+    references: {
+      model: User,
+      key: 'id',
+    },
+    allowNull: true,
   },
 });
 

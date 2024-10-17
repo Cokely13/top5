@@ -730,3 +730,290 @@
   0% { opacity: 1; }
   100% { opacity: 0; }
 }
+
+.profile-container {
+  padding: 20px;
+}
+
+.profile-card {
+  background-color: #fff;
+  border-radius: 15px;
+  padding: 30px;
+  max-width: 1200px;
+  margin: 40px auto;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  color: #333;
+}
+
+
+.profile-header {
+  display: flex;
+  flex-direction: column; /* Stack items vertically */
+  align-items: center;    /* Center items horizontally */
+  margin-bottom: 30px;
+}
+
+.profile-info {
+  text-align: center;
+}
+
+
+
+.profile-image-container {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 3px solid #1976d2;
+  transition: box-shadow 0.3s;
+  margin-bottom: 20px; /* Space below the image */
+}
+
+
+.profile-image-container img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.profile-image-container:hover {
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+}
+
+.profile-info h2 {
+  font-size: 2em;
+  color: #333;
+}
+
+.change-photo-button {
+  margin-top: 15px;
+}
+
+.upload-section {
+  text-align: center;
+  margin-top: 30px;
+}
+
+.image-preview {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  overflow: hidden;
+  margin: 0 auto 15px;
+  border: 2px solid #1976d2;
+  transition: box-shadow 0.3s;
+}
+
+.image-preview img,
+.placeholder {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #e0e0e0;
+}
+
+.placeholder i {
+  font-size: 80px;
+  color: #9e9e9e;
+}
+
+.image-preview:hover {
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+}
+
+
+/* Reset default button styles */
+button {
+  padding: 0;
+  margin: 0;
+  border: none;
+  background: none;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+
+/* Base Button Styles */
+.button-common {
+  /* display: inline-block; */
+  color: #fff;
+  padding: 12px 25px;
+  border: none;
+  border-radius: 30px;
+  cursor: pointer;
+  font-size: 1em;
+  text-align: center;
+  text-decoration: none;
+  margin: 5px;
+  box-sizing: border-box;
+  line-height: normal;
+  font-family: inherit;
+  white-space: nowrap;
+}
+
+/* Specific Styles for Choose Photo Button */
+.button2 {
+  background-color: red;
+}
+
+/* Specific Styles for Upload Photo Button */
+.button3 {
+  background-color: green;
+}
+
+/* Button Group Styling */
+.button-group {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+
+
+/* Specific Styles for Upload Photo Button */
+.upload-button {
+  background-color: #388e3c; /* Green color */
+}
+
+/* Hover Effects (Optional) */
+.button2:hover {
+  background-color: grey;
+}
+
+/* Button Group Styling */
+.button-group {
+  display: flex;
+  gap: 10px; /* Adjust the space between buttons */
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap; /* For responsiveness */
+}
+
+
+
+.tabs {
+  display: flex;
+  border-bottom: 2px solid #e0e0e0;
+  margin-bottom: 20px;
+}
+
+.tab {
+  flex: 1;
+  padding: 15px;
+  text-align: center;
+  cursor: pointer;
+  background-color: #f9f9f9;
+  border: none;
+  outline: none;
+  font-size: 1em;
+  transition: background-color 0.3s;
+}
+
+.tab.active {
+  border-bottom: 4px solid #1976d2;
+  background-color: #fff;
+}
+
+.tab:not(.active):hover {
+  background-color: #e0e0e0;
+}
+
+.profile-stats {
+  display: grid;
+  /* grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); */
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+.stat-item {
+  background-color: #f9f9f9;
+  border-radius: 10px;
+  padding: 20px;
+  text-align: center;
+  transition: transform 0.2s;
+}
+
+.stat-item:hover {
+  transform: translateY(-5px);
+}
+
+.stat-item i {
+  font-size: 2em;
+  color: #1976d2;
+  margin-bottom: 10px;
+}
+
+.stat-item p {
+  color: #555;
+  margin-bottom: 10px;
+}
+
+.stat-item h3 {
+  font-size: 1.5em;
+  margin: 0;
+}
+
+.progress-bar {
+  background-color: #e0e0e0;
+  border-radius: 10px;
+  overflow: hidden;
+  height: 15px;
+  margin: 10px 0;
+}
+
+.progress {
+  background-color: #1976d2;
+  height: 100%;
+}
+
+.button {
+  background-color: #1976d2;
+  color: #fff;
+  padding: 12px 25px;
+  border: none;
+  border-radius: 30px;
+  cursor: pointer;
+  font-size: 1em;
+  transition: background-color 0.3s;
+}
+
+.button:hover {
+  background-color: #1565c0;
+}
+
+.activity-section {
+  text-align: center;
+  color: #555;
+}
+
+@media (max-width: 600px) {
+  .profile-header {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .profile-image-container {
+    margin-right: 0;
+    margin-bottom: 20px;
+  }
+
+  .stat-item {
+    padding: 15px;
+  }
+
+  .tabs {
+    flex-direction: column;
+  }
+
+  .tab {
+    margin-bottom: 5px;
+  }
+}
