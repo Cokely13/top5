@@ -74,8 +74,11 @@ function Archive() {
     }
   }, [user, selectedQuestion]);
 
+  const oldQuestions = questions.filter((question) => question.expired == 'true')
+
+
   // Generate options for the date dropdown
-  const dateOptions = questions.map((question) => ({
+  const dateOptions = oldQuestions.map((question) => ({
     dateAsked: question.dateAsked,
     formattedDate: new Date(question.dateAsked).toLocaleDateString(),
   }));
