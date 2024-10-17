@@ -1047,3 +1047,89 @@ archive */
   margin-bottom: 30px;
   color: #333;
 }
+
+/* Container to center the form */
+.auth-container {
+  display: flex;
+  flex-direction: column; /* Stack items vertically */
+  justify-content: center;
+  align-items: center;
+  height: 100vh; /* Full viewport height */
+  background-color: #f7f7f7; /* Soft background color */
+}
+
+.auth-logo {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.auth-logo-image {
+  width: 200px;          /* Adjust the size as needed */
+  height: 200px;
+  border-radius: 50%;    /* Make it circular */
+  object-fit: cover;     /* Ensure the image scales properly */
+}
+
+.auth-form {
+  width: 400px;
+  padding: 20px;
+  border-radius: 8px;
+  background-color: white;
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+  display: flex;             /* Add this line */
+  flex-direction: column;
+  align-items: center; /* Center labels above inputs */
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 20px;
+  align-items: center; /* Center labels above inputs */
+  width: 80%;
+}
+
+.form-label {
+  font-size: 1rem;
+  margin-bottom: 5px;
+  text-align: center;
+  color: #333;
+  font-weight: bold;
+}
+
+.form-input {
+  width: 80%;
+  padding: 10px;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  transition: border-color 0.3s ease;
+}
+
+.form-input:focus {
+  border-color: #1e90ff;
+  outline: none;
+}
+
+.auth-button {
+  width: 80%;
+  padding: 12px;
+  font-size: 1.2rem;
+  color: white;
+  background-color: #1e90ff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.auth-button:hover {
+  background-color: #1c86ee;
+}
+
+.error-message {
+  color: red;
+  font-size: 0.9rem;
+  text-align: center;
+  margin-top: 10px;
+}

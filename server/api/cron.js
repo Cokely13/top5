@@ -1,59 +1,154 @@
+// const cron = require('node-cron');
+// const { models: { Question, Guess } } = require('../db');
+
+// async function updateDailyQuestionAndWinner() {
+//   console.log('Running scheduled task to update daily question and winner...');
+
+//   try {
+//     // Get yesterday's date in YYYY-MM-DD format
+//     const yesterday = new Date();
+//     yesterday.setDate(yesterday.getDate() - 1);
+//     const yesterdayDateOnly = yesterday.toISOString().split('T')[0];
+
+//     // const today = new Date();
+//     // today.setDate(today.getDate());
+//     // const todayDateOnly = today.toISOString().split('T')[0];
+
+//     // console.log("today", todayDateOnly)
+
+//     // Find the question for yesterday that hasn't expired
+//     const question = await Question.findOne({
+//       where: {
+//         dateAsked: `${yesterdayDateOnly}`,
+//         expired: false,
+//       },
+//       include: [{ model: Guess }],
+//     });
+
+
+//     if (!question) {
+//       console.log('No active question for yesterday.');
+//       return;
+//     }
+
+//     // Calculate the winner based on the highest total points for that question
+//     const userPointsMap = {};
+
+//     question.Guesses.forEach((guess) => {
+//       if (!userPointsMap[guess.userId]) {
+//         userPointsMap[guess.userId] = 0;
+//       }
+//       userPointsMap[guess.userId] += guess.pointsEarned;
+//     });
+
+//     // Determine the user with the highest points
+//     let maxPoints = -1;
+//     let winnerId = null;
+
+//     Object.keys(userPointsMap).forEach((userId) => {
+//       if (userPointsMap[userId] > maxPoints) {
+//         maxPoints = userPointsMap[userId];
+//         winnerId = userId;
+//       }
+//     });
+
+//     if (winnerId) {
+//       // Update the question with the daily winner
+//       await question.update({ dailyWinnerId: winnerId });
+//       console.log(`Daily winner updated successfully for question ID ${question.id}. Winner ID: ${winnerId}`);
+//     }
+
+//     // Mark the question as expired
+//     await question.update({ expired: true });
+//     console.log('Question marked as expired successfully.');
+//   } catch (error) {
+//     console.error('Error running daily update:', error);
+//   }
+// }
+
+// // Schedule the task to run every day at midnight
+// cron.schedule('0 0 * * *', updateDailyQuestionAndWinner);
+
+// // Run the function immediately if you execute the script manually
+// updateDailyQuestionAndWinner();
 const cron = require('node-cron');
-const { models:  {Question, UserResponse, Consensus} } = require('../db');
+const { models: { Question, Guess } } = require('../db');
 
-// Schedule a job to run every day at midnight
-cron.schedule('0 0 * * *', async () => {
-  console.log('Running scheduled task to create consensus at midnight...');
+async function updateDailyQuestionAndWinner() {
+  console.log('Running scheduled task to update daily question and winner...');
+
   try {
-    // Get today's date in YYYY-MM-DD format
-
+    // Get yesterday's date in YYYY-MM-DD format
     const yesterday = new Date();
     yesterday.setDate(yesterday.getDate() - 1);
     const yesterdayDateOnly = yesterday.toISOString().split('T')[0];
 
-    console.log("todaySDate", yesterdayDateOnly)
-
-
-    // Query to find a question with today's date
+    // Find the question for yesterday that hasn't expired
     const question = await Question.findOne({
       where: {
-        dateAsked: yesterdayDateOnly,
+        dateAsked: `${yesterdayDateOnly}`,
         expired: false,
       },
-      include: [{ model: UserResponse }],
+      include: [{ model: Guess }],
     });
 
     if (!question) {
-      console.log('No active question for today.');
+      console.log('No active question for yesterday.');
       return;
     }
 
-    // Calculate votes
-    const optionAVotes = question.user_responses.filter(
-      (response) => response.response === 'option_a'
-    ).length;
-    const optionBVotes = question.user_responses.filter(
-      (response) => response.response === 'option_b'
-    ).length;
+    // Calculate the winner based on the highest total points for that question
+    const userPointsMap = {};
 
-    if (optionAVotes === optionBVotes) {
-      console.log('No consensus reached, equal votes for both options.');
-      return;
-    }
-
-    // Determine the consensus answer
-    const consensusAnswer = optionAVotes > optionBVotes ? 'option_a' : 'option_b';
-
-    // Mark question as expired and create consensus
-    await question.update({ expired: true });
-    await Consensus.create({
-      questionId: question.id,
-      consensusAnswer,
-      calculatedAt: new Date(),
+    question.Guesses.forEach((guess) => {
+      if (!userPointsMap[guess.userId]) {
+        userPointsMap[guess.userId] = 0;
+      }
+      userPointsMap[guess.userId] += guess.pointsEarned;
     });
 
-    console.log('Consensus created successfully.');
+    // Determine the users with the highest points
+    let maxPoints = -1;
+    let potentialWinners = [];
+
+    Object.keys(userPointsMap).forEach((userId) => {
+      if (userPointsMap[userId] > maxPoints) {
+        maxPoints = userPointsMap[userId];
+        potentialWinners = [userId]; // Reset the list if a higher score is found
+      } else if (userPointsMap[userId] === maxPoints) {
+        potentialWinners.push(userId); // Add to the list if the score matches maxPoints
+      }
+    });
+
+    let winnerId = null;
+
+    if (potentialWinners.length === 1) {
+      // Only one winner with the highest points
+      winnerId = potentialWinners[0];
+    } else if (potentialWinners.length > 1) {
+      // Multiple users have the same points, choose one randomly
+      const randomIndex = Math.floor(Math.random() * potentialWinners.length);
+      winnerId = potentialWinners[randomIndex];
+    }
+
+    if (winnerId) {
+      // Update the question with the daily winner
+      await question.update({ dailyWinnerId: winnerId });
+      console.log(`Daily winner updated successfully for question ID ${question.id}. Winner ID: ${winnerId}`);
+    }
+
+    // Mark the question as expired
+    await question.update({ expired: true });
+    console.log('Question marked as expired successfully.');
   } catch (error) {
-    console.error('Error creating consensus:', error);
+    console.error('Error running daily update:', error);
   }
+}
+
+// Schedule the task to run every day at midnight (Eastern Time)
+cron.schedule('0 0 * * *', updateDailyQuestionAndWinner, {
+  timezone: "America/New_York"
 });
+
+// Run the function immediately if you execute the script manually
+updateDailyQuestionAndWinner();

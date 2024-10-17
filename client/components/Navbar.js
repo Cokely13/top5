@@ -115,6 +115,11 @@ const Navbar = ({ handleClick, isLoggedIn, isAdmin }) => {
                       CreateQuestion
                     </NavLink>
                   </li>
+                  <li>
+                    <NavLink to="/archive" onClick={closeMobileMenu}>
+                      Archive
+                    </NavLink>
+                  </li>
                 </ul>
               </li>
               <li
