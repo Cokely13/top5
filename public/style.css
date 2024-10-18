@@ -1228,7 +1228,14 @@ archive */
   }
 }
 
+.user-detail-page-container{
+  margin-top: 50px;
+  padding: 20px;
+}
+
+
 .user-page-container {
+  margin-top: 50px;
   padding: 20px;
 }
 
