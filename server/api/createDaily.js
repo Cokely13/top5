@@ -1,4 +1,5 @@
-const cron = require('node-cron');
+'use strict';
+
 const { models: { Question, Guess } } = require('../db');
 
 async function updateDailyQuestionAndWinner() {
@@ -72,10 +73,6 @@ async function updateDailyQuestionAndWinner() {
   }
 }
 
-// Schedule the task to run every day at midnight (Eastern Time)
-cron.schedule('0 0 * * *', updateDailyQuestionAndWinner, {
-  timezone: "America/New_York"
-});
-
-// Run the function immediately if you execute the script manually
+// Run the function immediately when the script is executed
 updateDailyQuestionAndWinner();
+

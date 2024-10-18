@@ -101,7 +101,7 @@ function TodaysLeaderboard() {
           </tbody>
         </table>
       ) : (
-        <p className="no-guesses">No guesses have been made for this date.</p>
+        <p className="no-guesses">No guesses.</p>
       )}
     </div>
   );
