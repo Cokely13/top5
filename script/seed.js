@@ -23,6 +23,44 @@ async function getHighestGrossingMovies(year) {
   }
 }
 
+async function getHighestRatedMovies(year) {
+  try {
+    const response = await axios.get('https://api.themoviedb.org/3/discover/movie', {
+      params: {
+        api_key: '46bc0d05e584bfed1df9ee4d1ae6c6a6', // Replace with your TMDb API key
+        primary_release_year: year,
+        sort_by: 'vote_average.desc',
+        page: 1,
+        vote_count_gte: 100, // Ensure a reasonable number of votes
+      },
+    });
+    // Limit to top 10 movies
+    return response.data.results.slice(0, 10).map((movie) => movie.title);
+  } catch (error) {
+    console.error(`Error fetching highest rated movies for year ${year}:`, error);
+    return [];
+  }
+}
+
+async function getHighestRatedTVShows(year) {
+  try {
+    const response = await axios.get('https://api.themoviedb.org/3/discover/tv', {
+      params: {
+        api_key: '46bc0d05e584bfed1df9ee4d1ae6c6a6', // Replace with your TMDb API key
+        first_air_date_year: year,
+        sort_by: 'vote_average.desc',
+        page: 1,
+        vote_count_gte: 100, // Ensure a reasonable number of votes
+      },
+    });
+    // Limit to top 10 TV shows
+    return response.data.results.slice(0, 10).map((show) => show.name);
+  } catch (error) {
+    console.error(`Error fetching highest rated TV shows for year ${year}:`, error);
+    return [];
+  }
+}
+
 async function seed() {
   await db.sync({ force: true }); // clears db and matches models to tables
   console.log('db synced!');
@@ -385,6 +423,34 @@ async function seed() {
         });
       }
     }
+
+      // Fetching the highest rated movies for each year from 2013 to 2023
+  for (let year = 2013; year <= 2023; year++) {
+    const highestRatedMovies = await getHighestRatedMovies(year);
+    if (highestRatedMovies.length > 0) {
+      questionData.push({
+        text: `What is the highest rated movie of ${year}?`,
+        dateAsked: addDays(today, dateOffset++), // Ensure unique date for each question
+        createdBy: users[0].id,
+        category: 'Entertainment',
+        answers: highestRatedMovies,
+      });
+    }
+  }
+
+  // Fetching the highest rated TV shows for each year from 2013 to 2023
+  for (let year = 2013; year <= 2023; year++) {
+    const highestRatedTVShows = await getHighestRatedTVShows(year);
+    if (highestRatedTVShows.length > 0) {
+      questionData.push({
+        text: `What is the highest rated TV show of ${year}?`,
+        dateAsked: addDays(today, dateOffset++), // Ensure unique date for each question
+        createdBy: users[0].id,
+        category: 'Entertainment',
+        answers: highestRatedTVShows,
+      });
+    }
+  }
 
   // Create Questions and Answers
   for (const qData of questionData) {
