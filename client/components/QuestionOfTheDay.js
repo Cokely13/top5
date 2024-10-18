@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { fetchQuestions } from '../store/allQuestionsStore';
 import { fetchSingleUser } from '../store/singleUserStore';
 import { createGuess } from '../store/allGuessesStore';
+import Fuse from 'fuse.js';
 
 function QuestionOfTheDay() {
   const dispatch = useDispatch();
@@ -110,6 +111,64 @@ function QuestionOfTheDay() {
     };
   }, []);
 
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+  //   if (!selectedQuestion) return;
+  //   setFeedbackMessage('');
+
+  //   const trimmedAnswer = userAnswer.trim();
+  //   if (trimmedAnswer === '') {
+  //     setFeedbackMessage('Please enter a valid answer.');
+  //     return;
+  //   }
+
+  //   const isCorrect = selectedQuestion.answers.some(
+  //     (ans) => ans.text.toLowerCase() === trimmedAnswer.toLowerCase()
+  //   );
+
+  //   // Check if the user has already guessed this answer
+  //   const existingGuess = user.Guesses.find(
+  //     (guess) =>
+  //       guess.questionId === selectedQuestion.id &&
+  //       guess.guess.toLowerCase() === trimmedAnswer.toLowerCase()
+  //   );
+
+  //   if (existingGuess) {
+  //     setFeedbackMessage('You have already guessed this answer.');
+  //     return;
+  //   }
+
+  //   try {
+  //     // Dispatch createGuess and wait for the created guess
+  //     await dispatch(
+  //       createGuess({
+  //         guess: trimmedAnswer,
+  //         userId: userId,
+  //         questionId: selectedQuestion.id,
+  //       })
+  //     );
+
+  //     // Re-fetch the user's data to update guesses
+  //     await dispatch(fetchSingleUser(userId));
+
+  //     if (!isCorrect) {
+  //       setShowRedX(true);
+  //       // Clear any existing timeout
+  //       if (timeoutIdRef.current) {
+  //         clearTimeout(timeoutIdRef.current);
+  //       }
+  //       timeoutIdRef.current = setTimeout(() => {
+  //         setShowRedX(false);
+  //       }, 3000);
+  //     }
+
+  //     setUserAnswer('');
+  //   } catch (error) {
+  //     console.error('Error submitting guess:', error);
+  //     setFeedbackMessage('An error occurred while submitting your guess.');
+  //   }
+  // };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!selectedQuestion) return;
@@ -121,50 +180,60 @@ function QuestionOfTheDay() {
       return;
     }
 
-    const isCorrect = selectedQuestion.answers.some(
-      (ans) => ans.text.toLowerCase() === trimmedAnswer.toLowerCase()
-    );
+    // Initialize Fuse.js for fuzzy matching
+    const fuse = new Fuse(selectedQuestion.answers, {
+      keys: ['text'],
+      threshold: 0.3, // Adjust this to determine how fuzzy you want the match to be
+    });
 
-    // Check if the user has already guessed this answer
-    const existingGuess = user.Guesses.find(
-      (guess) =>
-        guess.questionId === selectedQuestion.id &&
-        guess.guess.toLowerCase() === trimmedAnswer.toLowerCase()
-    );
+    // Find the best match for the user's input
+    const result = fuse.search(trimmedAnswer);
+    const bestMatch = result.length > 0 ? result[0].item.text : null;
 
-    if (existingGuess) {
-      setFeedbackMessage('You have already guessed this answer.');
-      return;
-    }
+    // Check if the best match is acceptable
+    if (bestMatch) {
+      const isCorrect = true;
 
-    try {
-      // Dispatch createGuess and wait for the created guess
-      await dispatch(
-        createGuess({
-          guess: trimmedAnswer,
-          userId: userId,
-          questionId: selectedQuestion.id,
-        })
+      // Check if the user has already guessed this answer
+      const existingGuess = user.Guesses.find(
+        (guess) =>
+          guess.questionId === selectedQuestion.id &&
+          guess.guess.toLowerCase() === bestMatch.toLowerCase()
       );
 
-      // Re-fetch the user's data to update guesses
-      await dispatch(fetchSingleUser(userId));
-
-      if (!isCorrect) {
-        setShowRedX(true);
-        // Clear any existing timeout
-        if (timeoutIdRef.current) {
-          clearTimeout(timeoutIdRef.current);
-        }
-        timeoutIdRef.current = setTimeout(() => {
-          setShowRedX(false);
-        }, 3000);
+      if (existingGuess) {
+        setFeedbackMessage('You have already guessed this answer.');
+        return;
       }
 
+      try {
+        // Dispatch createGuess and wait for the created guess
+        await dispatch(
+          createGuess({
+            guess: bestMatch, // Use the matched answer
+            userId: userId,
+            questionId: selectedQuestion.id,
+          })
+        );
+
+        // Re-fetch the user's data to update guesses
+        await dispatch(fetchSingleUser(userId));
+
+        setUserAnswer('');
+      } catch (error) {
+        console.error('Error submitting guess:', error);
+        setFeedbackMessage('An error occurred while submitting your guess.');
+      }
+    } else {
+      setShowRedX(true);
+      if (timeoutIdRef.current) {
+        clearTimeout(timeoutIdRef.current);
+      }
+      timeoutIdRef.current = setTimeout(() => {
+        setShowRedX(false);
+      }, 3000);
       setUserAnswer('');
-    } catch (error) {
-      console.error('Error submitting guess:', error);
-      setFeedbackMessage('An error occurred while submitting your guess.');
+      setFeedbackMessage('Incorrect answer. Try again.');
     }
   };
 
@@ -235,6 +304,30 @@ function QuestionOfTheDay() {
                   </button>
                 </div>
               </form>
+//               <form onSubmit={handleSubmit} className="qotd-answer-form">
+//   <label htmlFor="userAnswer">Enter your answer:</label>
+//   <div className="input-group">
+//     <input
+//       type="text"
+//       id="userAnswer"
+//       list="answerSuggestions" // Link input to datalist
+//       value={userAnswer}
+//       onChange={(e) => setUserAnswer(e.target.value)}
+//       required
+//       className="qotd-answer-input"
+//       placeholder="Type your answer here..."
+//     />
+//     <datalist id="answerSuggestions">
+//       {selectedQuestion &&
+//         selectedQuestion.answers.map((answer, index) => (
+//           <option key={index} value={answer.text} />
+//         ))}
+//     </datalist>
+//     <button type="submit" className="qotd-submit-button">
+//       Submit
+//     </button>
+//   </div>
+// </form>
             ) : allAnswersGuessed ? (
               <p className="congrats-message">Congrats! You got all the answers!</p>
             ) : null}
