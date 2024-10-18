@@ -1,9 +1,27 @@
 'use strict';
-
+const axios = require('axios');
 const {
   db,
   models: { User, Question, Answer },
 } = require('../server/db');
+
+async function getHighestGrossingMovies(year) {
+  try {
+    const response = await axios.get('https://api.themoviedb.org/3/discover/movie', {
+      params: {
+        api_key: '46bc0d05e584bfed1df9ee4d1ae6c6a6',
+        primary_release_year: year,
+        sort_by: 'revenue.desc',
+        page: 1,
+      },
+    });
+    // Limit to top 10 movies
+    return response.data.results.slice(0, 10).map((movie) => movie.title);
+  } catch (error) {
+    console.error(`Error fetching data for year ${year}:`, error);
+    return [];
+  }
+}
 
 async function seed() {
   await db.sync({ force: true }); // clears db and matches models to tables
@@ -353,6 +371,20 @@ async function seed() {
       ],
     },
   ];
+  let dateOffset = questionData.length + 1
+    // Fetching the highest grossing movies for each year from 2013 to 2023
+    for (let year = 2013; year <= 2023; year++) {
+      const topMovies = await getHighestGrossingMovies(year);
+      if (topMovies.length > 0) {
+        questionData.push({
+          text: `What is the highest grossing movie of ${year}?`,
+          dateAsked: addDays(today, dateOffset++), // Schedule each year question after the base question
+          createdBy: users[0].id,
+          category: 'Movies',
+          answers: topMovies,
+        });
+      }
+    }
 
   // Create Questions and Answers
   for (const qData of questionData) {
@@ -406,4 +438,4 @@ if (module === require.main) {
   runSeed();
 }
 
-module.exports = seed;
+module.exports = seed
