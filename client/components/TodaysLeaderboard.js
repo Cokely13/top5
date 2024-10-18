@@ -67,29 +67,7 @@ function TodaysLeaderboard() {
     });
   }
 
-  // Generate options for the date dropdown
-  // const dateOptions = questions.map((question) => ({
-  //   dateAsked: question.dateAsked,
-  //   formattedDate: new Date(question.dateAsked).toLocaleDateString(),
-  // }));
 
-  // const dateOptions = questions
-  // .filter((question) => question.expired || question.dateAsked === todayDate)
-  // .map((question) => ({
-  //   dateAsked: question.dateAsked,
-  //   formattedDate: new Date(question.dateAsked).toLocaleDateString(),
-  // }));
-
-  // Remove duplicate dates if there are multiple questions on the same date
-  // const uniqueDateOptions = Array.from(
-  //   new Set(dateOptions.map((item) => item.dateAsked))
-  // ).map((date) => {
-  //   const formattedDate = new Date(date).toLocaleDateString();
-  //   return { dateAsked: date, formattedDate };
-  // });
-
-  // Sort the dates in descending order
-  // uniqueDateOptions.sort((a, b) => new Date(b.dateAsked) - new Date(a.dateAsked));
 
   // Render the leaderboard
   return (
