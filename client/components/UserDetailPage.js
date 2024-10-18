@@ -114,8 +114,8 @@ const getOverallRank = () => {
         <div className="userdetail-detail-card">
           <div className="userdetail-detail-header">
             <div className="userdetail-image-container">
-              {selectedUser.image ? (
-                <img src={selectedUser.image} alt={selectedUser.username}/>
+              {selectedUser && selectedUser.image ? (
+                <img src={selectedUser.image} alt={selectedUser.username} />
               ) : (
                 <div className="placeholder">
                   <i className="fas fa-user-circle"></i>

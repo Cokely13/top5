@@ -14,6 +14,7 @@ function UserPage() {
 
   const filteredUsers = users.filter((user) => user.id !== currentUserId);
 
+  console.log("filtered", filteredUsers)
 
   return (
     <div className="user-page-container">
