@@ -148,7 +148,7 @@ const Navbar = ({ handleClick, isLoggedIn, isAdmin }) => {
                 <ul className="dropdown-menu">
                   <li>
                     <NavLink to="/leaderboard" onClick={closeMobileMenu}>
-                      TodaysLeaderboard
+                      DailyLeaderboard
                     </NavLink>
                   </li>
                   <li>

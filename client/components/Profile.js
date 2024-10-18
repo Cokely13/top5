@@ -460,11 +460,11 @@ function Profile() {
                 <p>Career Wins</p>
                 <h3>{getCareerWins()}</h3>
               </div>
-              <div className="stat-item">
+              {/* <div className="stat-item">
                 <i className="fas fa-calendar-times"></i>
                 <p>Longest Loss Streak</p>
                 <h3>{getLongestLossStreak()} days</h3>
-              </div>
+              </div> */}
               <div className="stat-item">
                 <i className="fas fa-medal"></i>
                 <p>Overall Rank</p>
@@ -486,8 +486,18 @@ function Profile() {
               {mostRecentPoints ? (
                 <div className="recent-activity">
                   <h3>Most Recent Activity</h3>
-                  <p>Points Scored: {mostRecentPoints}</p>
-                  <p>Rank for the Day: {mostRecentRank}</p>
+                  <div className="stat-item">
+                <i className="fas fa-coins"></i>
+                <p>Points Scored:</p>
+                <h3>{mostRecentPoints}</h3>
+              </div>
+              <div className="stat-item">
+              <i className="fas fa-medal"></i>
+                <p>Rank for the Day:</p>
+                <h3>{mostRecentRank}</h3>
+              </div>
+                  {/* <p>Points Scored: {mostRecentPoints}</p>
+                  <p>Rank for the Day: {mostRecentRank}</p> */}
                 </div>
               ) : (
                 <p>No recent activity to display.</p>

@@ -247,7 +247,7 @@ function QuestionOfTheDay() {
       {selectedQuestion ? (
         <>
           <div className="qotd-question-section">
-            <h2 className="qotd-heading">Top 10</h2>
+            {/* <h2 className="qotd-heading">Top 10</h2>
             <p className="qotd-date">
               <i className="fas fa-calendar-alt" style={{ marginRight: '10px' }}></i>
               {(() => {
@@ -257,12 +257,12 @@ function QuestionOfTheDay() {
                 const localDate = new Date(year, month - 1, day);
                 return localDate.toLocaleDateString();
               })()}
-            </p>
+            </p> */}
             <p className="qotd-text">{selectedQuestion.text}</p>
 
             {/* Display Ranked Answers */}
             <div className="qotd-ranked-answers">
-              <h3>Ranked Answers</h3>
+              {/* <h3>Ranked Answers</h3> */}
               <div className="ranked-answers-list">
                 {rankedAnswers.map((answerObj, index) => (
                   <div key={index} className="ranked-answer-item">
