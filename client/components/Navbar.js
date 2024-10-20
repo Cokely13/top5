@@ -105,11 +105,11 @@ const Navbar = ({ handleClick, isLoggedIn, isAdmin }) => {
                 }}
               >
                 <ul className="dropdown-menu">
-                  <li>
+                  {/* <li>
                     <NavLink to="/archive" onClick={closeMobileMenu}>
                       Archive
                     </NavLink>
-                  </li>
+                  </li> */}
                   <li>
                     <NavLink to="/create" onClick={closeMobileMenu}>
                       CreateQuestion
