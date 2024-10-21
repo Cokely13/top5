@@ -238,12 +238,6 @@ function QuestionOfTheDay() {
       className="qotd-answer-input"
       placeholder="Type your answer here..."
     />
-    <datalist id="answerSuggestions">
-      {selectedQuestion &&
-        selectedQuestion.answers.map((answer, index) => (
-          <option key={index} value={answer.text} />
-        ))}
-    </datalist>
     <button type="submit" className="qotd-submit-button">
       Submit
     </button>
