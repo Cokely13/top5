@@ -14,9 +14,9 @@ export const Home = (props) => {
   return (
     <div className="home-container">
       <Heading/>
-      <div className="Todayleaderboard-container">
+      {/* <div className="Todayleaderboard-container">
         <TodaysLeaderboard/>
-      </div>
+      </div> */}
       <div className="qotd-container">
         <QuestionOfTheDay />
       </div>

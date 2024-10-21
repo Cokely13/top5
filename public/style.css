@@ -688,6 +688,12 @@
   color: #777;
 }
 
+@media screen and (max-width: 768px) {
+  .Todayleaderboard-container {
+    display: none;
+  }
+}
+
 /* Responsive Design */
 @media (max-width: 600px) {
   .leaderboard-container {
@@ -1345,3 +1351,5 @@ archive */
     margin: 0 auto;
   }
 }
+
+
