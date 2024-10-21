@@ -104,23 +104,6 @@ const Navbar = ({ handleClick, isLoggedIn, isAdmin }) => {
                   }
                 }}
               >
-                <ul className="dropdown-menu">
-                  {/* <li>
-                    <NavLink to="/archive" onClick={closeMobileMenu}>
-                      Archive
-                    </NavLink>
-                  </li> */}
-                  <li>
-                    <NavLink to="/create" onClick={closeMobileMenu}>
-                      CreateQuestion
-                    </NavLink>
-                  </li>
-                  <li>
-                    <NavLink to="/archive" onClick={closeMobileMenu}>
-                      Archive
-                    </NavLink>
-                  </li>
-                </ul>
               </li>
               <li
                 className={`nav-item dropdown ${activeDropdown === 'questions' ? 'active' : ''}`}
@@ -158,46 +141,6 @@ const Navbar = ({ handleClick, isLoggedIn, isAdmin }) => {
                   </li>
                 </ul>
               </li>
-
-              {/* Admin Dropdown */}
-              {isAdmin && (
-                <li
-                  className={`nav-item dropdown ${activeDropdown === 'admin' ? 'active' : ''}`}
-                  onMouseEnter={() => {
-                    if (window.innerWidth > 768) {
-                      setActiveDropdown('admin');
-                    }
-                  }}
-                  onMouseLeave={() => {
-                    if (window.innerWidth > 768) {
-                      setActiveDropdown(null);
-                    }
-                  }}
-                >
-                  <span
-                    className="nav-link"
-                    onClick={() => {
-                      if (window.innerWidth <= 768) {
-                        toggleDropdown('admin');
-                      }
-                    }}
-                  >
-                    Admin <i className="fas fa-caret-down"></i>
-                  </span>
-                  <ul className="dropdown-menu">
-                    <li>
-                      <NavLink to="/questions" onClick={closeMobileMenu}>
-                        Questions
-                      </NavLink>
-                    </li>
-                    <li>
-                      <NavLink to="/review" onClick={closeMobileMenu}>
-                        Review
-                      </NavLink>
-                    </li>
-                  </ul>
-                </li>
-              )}
 
               {/* Logout */}
               <li className="nav-item">
