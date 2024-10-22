@@ -2,8 +2,9 @@
 // import { useDispatch, useSelector } from 'react-redux';
 // import { fetchQuestions } from '../store/allQuestionsStore';
 // import { fetchSingleUser } from '../store/singleUserStore';
+// import { fetchUsers } from '../store/allUsersStore';
 // import { createGuess } from '../store/allGuessesStore';
-
+// import TodaysLeaderboard from './TodaysLeaderboard';
 
 // function QuestionOfTheDay() {
 //   const dispatch = useDispatch();
@@ -12,12 +13,18 @@
 //   const questions = useSelector((state) => state.allQuestions || []);
 //   const { id: userId } = useSelector((state) => state.auth);
 //   const user = useSelector((state) => state.singleUser);
+//   const users = useSelector((state) => state.allUsers || []);
 
 //   // Local State
 //   const [selectedQuestion, setSelectedQuestion] = useState(null);
 //   const [userAnswer, setUserAnswer] = useState('');
 //   const [rankedAnswers, setRankedAnswers] = useState(
-//     Array.from({ length: 10 }, () => ({ text: '__________', guessed: false, revealed: false }))
+//     Array.from({ length: 10 }, (_, index) => ({
+//       text: '__________',
+//       guessed: false,
+//       revealed: false,
+//       rank: index + 1,
+//     }))
 //   );
 //   const [strikes, setStrikes] = useState(0);
 //   const maxStrikes = 3;
@@ -25,11 +32,13 @@
 //   const [allAnswersGuessed, setAllAnswersGuessed] = useState(false);
 //   const [userScore, setUserScore] = useState(0);
 //   const [showRedX, setShowRedX] = useState(false);
+//   const [showRankOverlay, setShowRankOverlay] = useState(null);
 //   const timeoutIdRef = useRef(null);
 
 //   // Fetch data on mount
 //   useEffect(() => {
 //     dispatch(fetchQuestions());
+//     dispatch(fetchUsers());
 //     if (userId) {
 //       dispatch(fetchSingleUser(userId));
 //     }
@@ -52,7 +61,12 @@
 //         (guess) => guess.questionId === selectedQuestion.id
 //       );
 
-//       const newRankedAnswers = Array.from({ length: 10 }, () => ({ text: '__________', guessed: false, revealed: false }));
+//       const newRankedAnswers = Array.from({ length: 10 }, (_, index) => ({
+//         text: '__________',
+//         guessed: false,
+//         revealed: false,
+//         rank: index + 1,
+//       }));
 
 //       let newStrikes = 0;
 //       let totalPoints = 0;
@@ -68,6 +82,7 @@
 //             text: matchedAnswer.text,
 //             guessed: true,
 //             revealed: false,
+//             rank: matchedAnswer.rank,
 //           };
 
 //           // Add points earned for this correct guess
@@ -82,11 +97,11 @@
 //         selectedQuestion.answers.forEach((answer) => {
 //           const rankIndex = answer.rank - 1;
 //           if (!newRankedAnswers[rankIndex].guessed) {
-//             // If the user didn't guess this answer, mark it as revealed
 //             newRankedAnswers[rankIndex] = {
 //               text: answer.text,
 //               guessed: false,
 //               revealed: true,
+//               rank: answer.rank,
 //             };
 //           }
 //         });
@@ -122,9 +137,12 @@
 //       return;
 //     }
 
-//     const isCorrect = selectedQuestion.answers.some(
+//     // Find the matched answer
+//     const matchedAnswer = selectedQuestion.answers.find(
 //       (ans) => ans.text.toLowerCase() === trimmedAnswer.toLowerCase()
 //     );
+
+//     const isCorrect = !!matchedAnswer;
 
 //     // Check if the user has already guessed this answer
 //     const existingGuess = user.Guesses.find(
@@ -149,9 +167,29 @@
 //       );
 
 //       // Re-fetch the user's data to update guesses
+//       await dispatch(fetchQuestions());
 //       await dispatch(fetchSingleUser(userId));
+//       await dispatch(fetchUsers()); // Re-fetch users to update leaderboard
 
-//       if (!isCorrect) {
+//       if (matchedAnswer) {
+//         // Correct guess
+//         if (matchedAnswer.rank <= 5) {
+//           // It's a top 5 answer
+
+//           setShowRankOverlay(`#${matchedAnswer.rank} Answer${'!'.repeat(6 - matchedAnswer.rank)}`);
+//           // Clear any existing timeout
+//           if (timeoutIdRef.current) {
+//             clearTimeout(timeoutIdRef.current);
+//           }
+//           timeoutIdRef.current = setTimeout(() => {
+//             setShowRankOverlay(null);
+//           }, 3000);
+//         } else {
+//           // Ranks 6-10
+//           setFeedbackMessage(`You found answer #${matchedAnswer.rank}.`);
+//         }
+//       } else {
+//         // Incorrect guess
 //         setShowRedX(true);
 //         // Clear any existing timeout
 //         if (timeoutIdRef.current) {
@@ -169,7 +207,6 @@
 //     }
 //   };
 
-
 //   return (
 //     <div className="qotd-container">
 //       {showRedX && (
@@ -177,6 +214,14 @@
 //           <div className="red-x">X</div>
 //         </div>
 //       )}
+//       {showRankOverlay && (
+//         <div className="rank-overlay">
+//           <div className="rank-message">{showRankOverlay}</div>
+//         </div>
+//       )}
+//       <div className="Todayleaderboard-container">
+//         <TodaysLeaderboard />
+//       </div>
 //       {selectedQuestion ? (
 //         <>
 //           <div className="qotd-question-section">
@@ -191,7 +236,9 @@
 //                     <div
 //                       className={`rank-answer-bubble ${
 //                         answerObj.guessed
-//                           ? 'guessed'
+//                           ? answerObj.rank <= 5
+//                             ? 'guessed-top5'
+//                             : 'guessed'
 //                           : answerObj.revealed
 //                           ? 'revealed'
 //                           : 'empty'
@@ -204,52 +251,34 @@
 //               </div>
 //             </div>
 
-
-
 //             {/* Answer Input */}
 //             {!allAnswersGuessed && strikes < maxStrikes ? (
-//               // <form onSubmit={handleSubmit} className="qotd-answer-form">
-//               //   <label htmlFor="userAnswer">Enter your answer:</label>
-//               //   <div className="input-group">
-//               //     <input
-//               //       type="text"
-//               //       id="userAnswer"
-//               //       value={userAnswer}
-//               //       onChange={(e) => setUserAnswer(e.target.value)}
-//               //       required
-//               //       className="qotd-answer-input"
-//               //       placeholder="Type your answer here..."
-//               //     />
-//               //     <button type="submit" className="qotd-submit-button">
-//               //       Submit
-//               //     </button>
-//               //   </div>
-//               // </form>
 //               <form onSubmit={handleSubmit} className="qotd-answer-form">
-//   <label htmlFor="userAnswer">Enter your answer:</label>
-//   <div className="input-group">
-//     <input
-//       type="text"
-//       id="userAnswer"
-//       list="answerSuggestions" // Link input to datalist
-//       value={userAnswer}
-//       onChange={(e) => setUserAnswer(e.target.value)}
-//       required
-//       className="qotd-answer-input"
-//       placeholder="Type your answer here..."
-//     />
-//     <button type="submit" className="qotd-submit-button">
-//       Submit
-//     </button>
-//   </div>
-// </form>
+//                 <label htmlFor="userAnswer">Enter your answer:</label>
+//                 <div className="input-group">
+//                   <input
+//                     type="text"
+//                     id="userAnswer"
+//                     value={userAnswer}
+//                     onChange={(e) => setUserAnswer(e.target.value)}
+//                     required
+//                     className="qotd-answer-input"
+//                     placeholder="Type your answer here..."
+//                   />
+//                   <button type="submit" className="qotd-submit-button">
+//                     Submit
+//                   </button>
+//                 </div>
+//               </form>
 //             ) : allAnswersGuessed ? (
 //               <p className="congrats-message">Congrats! You got all the answers!</p>
 //             ) : null}
 
 //             {/* Feedback Message */}
-//                {/* Display User Score */}
-//                <div className="qotd-user-score">
+//             {feedbackMessage && <p className="feedback-message">{feedbackMessage}</p>}
+
+//             {/* User Score */}
+//             <div className="qotd-user-score">
 //               <p>
 //                 <i className="fas fa-star"></i> Your Score: <strong>{userScore}</strong>
 //               </p>
@@ -269,7 +298,6 @@
 //                 </p>
 //               )}
 //             </div>
-//             {feedbackMessage && <p className="feedback-message">{feedbackMessage}</p>}
 //           </div>
 //         </>
 //       ) : (
@@ -282,7 +310,6 @@
 // }
 
 // export default QuestionOfTheDay;
-
 
 import React, { useEffect, useState, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -305,14 +332,21 @@ function QuestionOfTheDay() {
   const [selectedQuestion, setSelectedQuestion] = useState(null);
   const [userAnswer, setUserAnswer] = useState('');
   const [rankedAnswers, setRankedAnswers] = useState(
-    Array.from({ length: 10 }, () => ({ text: '__________', guessed: false, revealed: false }))
+    Array.from({ length: 10 }, (_, index) => ({
+      text: '__________',
+      guessed: false,
+      revealed: false,
+      rank: index + 1,
+    }))
   );
   const [strikes, setStrikes] = useState(0);
   const maxStrikes = 3;
+  const [currentStrike, setCurrentStrike] = useState(0); // New state variable
   const [feedbackMessage, setFeedbackMessage] = useState('');
   const [allAnswersGuessed, setAllAnswersGuessed] = useState(false);
   const [userScore, setUserScore] = useState(0);
   const [showRedX, setShowRedX] = useState(false);
+  const [showRankOverlay, setShowRankOverlay] = useState(null);
   const timeoutIdRef = useRef(null);
 
   // Fetch data on mount
@@ -341,7 +375,12 @@ function QuestionOfTheDay() {
         (guess) => guess.questionId === selectedQuestion.id
       );
 
-      const newRankedAnswers = Array.from({ length: 10 }, () => ({ text: '__________', guessed: false, revealed: false }));
+      const newRankedAnswers = Array.from({ length: 10 }, (_, index) => ({
+        text: '__________',
+        guessed: false,
+        revealed: false,
+        rank: index + 1,
+      }));
 
       let newStrikes = 0;
       let totalPoints = 0;
@@ -357,6 +396,7 @@ function QuestionOfTheDay() {
             text: matchedAnswer.text,
             guessed: true,
             revealed: false,
+            rank: matchedAnswer.rank,
           };
 
           // Add points earned for this correct guess
@@ -371,11 +411,11 @@ function QuestionOfTheDay() {
         selectedQuestion.answers.forEach((answer) => {
           const rankIndex = answer.rank - 1;
           if (!newRankedAnswers[rankIndex].guessed) {
-            // If the user didn't guess this answer, mark it as revealed
             newRankedAnswers[rankIndex] = {
               text: answer.text,
               guessed: false,
               revealed: true,
+              rank: answer.rank,
             };
           }
         });
@@ -411,9 +451,12 @@ function QuestionOfTheDay() {
       return;
     }
 
-    const isCorrect = selectedQuestion.answers.some(
+    // Find the matched answer
+    const matchedAnswer = selectedQuestion.answers.find(
       (ans) => ans.text.toLowerCase() === trimmedAnswer.toLowerCase()
     );
+
+    const isCorrect = !!matchedAnswer;
 
     // Check if the user has already guessed this answer
     const existingGuess = user.Guesses.find(
@@ -442,14 +485,37 @@ function QuestionOfTheDay() {
       await dispatch(fetchSingleUser(userId));
       await dispatch(fetchUsers()); // Re-fetch users to update leaderboard
 
-      if (!isCorrect) {
+      if (matchedAnswer) {
+        // Correct guess
+        if (matchedAnswer.rank <= 5) {
+          // It's a top 5 answer
+
+          setShowRankOverlay(
+            `#${matchedAnswer.rank} Answer${'!'.repeat(6 - matchedAnswer.rank)}`
+          );
+          // Clear any existing timeout
+          if (timeoutIdRef.current) {
+            clearTimeout(timeoutIdRef.current);
+          }
+          timeoutIdRef.current = setTimeout(() => {
+            setShowRankOverlay(null);
+          }, 3000);
+        } else {
+          // Ranks 6-10
+          setFeedbackMessage(`You found answer #${matchedAnswer.rank}.`);
+        }
+      } else {
+        // Incorrect guess
         setShowRedX(true);
+        setCurrentStrike(strikes + 1); // Update currentStrike
+
         // Clear any existing timeout
         if (timeoutIdRef.current) {
           clearTimeout(timeoutIdRef.current);
         }
         timeoutIdRef.current = setTimeout(() => {
           setShowRedX(false);
+          setCurrentStrike(0); // Reset currentStrike after displaying
         }, 3000);
       }
 
@@ -464,7 +530,13 @@ function QuestionOfTheDay() {
     <div className="qotd-container">
       {showRedX && (
         <div className="red-x-overlay">
+          <div className="strike-message">Strike {currentStrike}!</div>
           <div className="red-x">X</div>
+        </div>
+      )}
+      {showRankOverlay && (
+        <div className="rank-overlay">
+          <div className="rank-message">{showRankOverlay}</div>
         </div>
       )}
       <div className="Todayleaderboard-container">
@@ -484,7 +556,9 @@ function QuestionOfTheDay() {
                     <div
                       className={`rank-answer-bubble ${
                         answerObj.guessed
-                          ? 'guessed'
+                          ? answerObj.rank <= 5
+                            ? 'guessed-top5'
+                            : 'guessed'
                           : answerObj.revealed
                           ? 'revealed'
                           : 'empty'
@@ -521,6 +595,9 @@ function QuestionOfTheDay() {
             ) : null}
 
             {/* Feedback Message */}
+            {feedbackMessage && <p className="feedback-message">{feedbackMessage}</p>}
+
+            {/* User Score */}
             <div className="qotd-user-score">
               <p>
                 <i className="fas fa-star"></i> Your Score: <strong>{userScore}</strong>
@@ -541,7 +618,6 @@ function QuestionOfTheDay() {
                 </p>
               )}
             </div>
-            {feedbackMessage && <p className="feedback-message">{feedbackMessage}</p>}
           </div>
         </>
       ) : (
