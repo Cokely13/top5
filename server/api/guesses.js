@@ -19,6 +19,8 @@ router.get('/:id', async (req, res, next) => {
   }
 });
 
+
+
 // router.post('/', async (req, res, next) => {
 //   try {
 //     const { guess, userId, questionId } = req.body;
@@ -106,7 +108,15 @@ router.post('/', async (req, res, next) => {
     if (matchedAnswer) {
       // Correct guess
       rank = matchedAnswer.rank;
-      pointsEarned = 10 - matchedAnswer.rank + 1; // Example scoring: higher rank = more points
+
+      if (matchedAnswer.rank <= 5) {
+        // Top 5 answer
+        pointsEarned = 10 - matchedAnswer.rank + 1; // Adjust scoring as needed
+      } else {
+        // Answer rank > 5, no points, no strike
+        pointsEarned = 0;
+        // No strikes added
+      }
     } else {
       // Incorrect guess
       strikes = 1; // Increment strikes by 1 for each incorrect guess
@@ -134,7 +144,6 @@ router.post('/', async (req, res, next) => {
     next(error);
   }
 });
-
 
 router.put('/:id', async (req, res, next) => {
   try {
