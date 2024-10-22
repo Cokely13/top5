@@ -438,6 +438,7 @@ function QuestionOfTheDay() {
       );
 
       // Re-fetch the user's data to update guesses
+      await dispatch(fetchQuestions());
       await dispatch(fetchSingleUser(userId));
       await dispatch(fetchUsers()); // Re-fetch users to update leaderboard
 

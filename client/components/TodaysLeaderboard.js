@@ -15,7 +15,7 @@ function TodaysLeaderboard() {
   useEffect(() => {
     dispatch(fetchQuestions());
     dispatch(fetchUsers());
-  }, [dispatch]);
+  }, [dispatch, users.length, questions.length]);
 
   // Create a map of userId to username and image for quick lookup
   const usersMap = {};
