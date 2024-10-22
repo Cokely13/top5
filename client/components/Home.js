@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import QuestionOfTheDay from './QuestionOfTheDay';
 import Heading from './Heading';
 import TodaysLeaderboard from './TodaysLeaderboard';
+import DailyCongrats from './DailyCongrats';
 
 
 /**
@@ -14,6 +15,7 @@ export const Home = (props) => {
   return (
     <div className="home-container">
       <Heading/>
+      <DailyCongrats />
       {/* <div className="Todayleaderboard-container">
         <TodaysLeaderboard/>
       </div> */}
