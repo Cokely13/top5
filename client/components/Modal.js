@@ -9,9 +9,9 @@ const Modal = ({ onClose, children }) => {
       <div className="modal-content">
         {children}
         {/* Close button inside modal content */}
-        <button onClick={onClose} className="modal-close-button">
+        {/* <button onClick={onClose} className="modal-close-button">
           Close
-        </button>
+        </button> */}
       </div>
       <div className="modal-background" onClick={onClose}></div>
     </div>,

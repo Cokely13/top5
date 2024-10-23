@@ -244,13 +244,25 @@ function DailyCongrats() {
     return n + (s[(v - 20) % 10] || s[v] || s[0]);
   };
 
+  const getMedalEmoji = (rank) => {
+    if (rank === 1) return '🥇';
+    if (rank === 2) return '🥈';
+    if (rank === 3) return '🥉';
+    return null;
+  };
+
   if (!showCongratsModal) {
     return null;
   }
 
+  const medalEmoji = getMedalEmoji(userRank);
+
   return (
     <Modal onClose={closeModal}>
       <h2>Congratulations, {username}!</h2>
+      {medalEmoji && (
+      <div className="medal-emoji">{medalEmoji}</div>
+    )}
       <p>You got {getOrdinal(userRank)} place yesterday!</p>
       <button onClick={closeModal}>Close</button>
     </Modal>

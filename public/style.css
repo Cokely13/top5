@@ -1479,6 +1479,7 @@ archive */
  */
 
  /* Modal.css */
+/* Modal.css */
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -1498,30 +1499,58 @@ archive */
 }
 
 .modal-content {
-  position: fixed; /* Change from relative to fixed */
+  position: fixed;
   top: 50%;
   left: 50%;
-  transform: translate(-50%, -50%); /* Center the modal */
-  background-color: white;
+  transform: translate(-50%, -50%);
+  background-color: #fff;
   width: 80%;
   max-width: 500px;
-  padding: 30px; /* Increased padding for better spacing */
+  padding: 30px;
   z-index: 1001;
-  border-radius: 12px; /* Slightly more rounded corners */
+  border-radius: 12px;
   text-align: center;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.3); /* Add a subtle shadow */
+  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
 }
 
 .modal-content h2 {
   margin-top: 0;
+  font-size: 2em;
+  color: #333;
+}
+
+.modal-content p {
+  font-size: 1.2em;
+  color: #555;
 }
 
 .modal-content button {
   margin-top: 20px;
   padding: 10px 20px;
+  background-color: #28a745; /* Green button */
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.modal-content button:hover {
+  background-color: #218838;
+}
+
+.medal-image {
+  width: 100px;
+  height: 100px;
+  margin: 20px auto;
+  display: block;
 }
 
 .modal-close-button {
   margin-top: 20px;
   padding: 10px 20px;
+}
+
+.medal-emoji {
+  font-size: 5em;
+  margin: 20px 0;
 }
