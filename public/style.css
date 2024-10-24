@@ -1,3 +1,4 @@
+/* General Navbar Styles */
 .navbar {
   background-color: #124e66;
   color: white;
@@ -9,9 +10,8 @@
   display: flex;
   align-items: center;
   padding: 0;
-  height: 70px; /* Increased height */
+  height: 70px;
 }
-
 
 .navbar-container {
   display: flex;
@@ -29,18 +29,14 @@
   cursor: pointer;
   display: flex;
   align-items: center;
-  margin: 0;
-  padding: 0;
 }
 
 .navbar-logo-image {
-  height: 60px; /* Adjusted height */
+  height: 60px;
   width: auto;
   cursor: pointer;
-  border-radius: 50%;    /* Make it a circle */
-  object-fit: cover;     /* Ensure the image scales properly */
-  margin: 0;
-  padding: 0;
+  border-radius: 50%;
+  object-fit: cover;
 }
 
 .menu-icon {
@@ -63,9 +59,6 @@
 
 .nav-links li {
   position: relative;
-  height: 60px;
-  display: flex;
-  align-items: center;
 }
 
 .nav-links li a,
@@ -80,13 +73,11 @@
   border-radius: 4px;
   transition: background-color 0.3s, color 0.3s;
   cursor: pointer;
-  line-height: normal;
 }
 
 .nav-link i {
   margin-left: 5px;
 }
-
 
 .nav-links li a.logout {
   color: #FF4D4D;
@@ -106,8 +97,10 @@
   left: 0;
   min-width: 160px;
   z-index: 999;
+  list-style: none;
+  padding: 0;
+  margin: 0;
 }
-
 
 .nav-item.active .dropdown-menu {
   display: block;
@@ -119,74 +112,62 @@
 
 .dropdown-menu li a {
   display: block;
-  padding: 10px;
+  padding: 10px 15px;
   text-align: left;
   color: #d3d9d4;
   text-decoration: none;
   transition: background-color 0.3s, color 0.3s;
 }
 
-
-
-/* Remove highlight after clicking */
-.dropdown-menu li a:focus,
-.dropdown-menu li a:active {
-  background-color: transparent;
-  color: inherit;
+.dropdown-menu li a:hover {
+  background-color: #2E3944;
+  color: #ffffff;
 }
 
 /* Mobile Styles */
 @media screen and (max-width: 768px) {
-  .navbar {
-    height: 60px;
-  }
-
-  .navbar-container {
-    height: 60px;
-  }
-
-  .navbar-logo-image {
-    height: 40px;
-  }
-
   .menu-icon {
-    position: fixed;
+    display: block;
+    position: absolute;
     top: 15px;
     right: 20px;
-    display: block;
-    font-size: 1.8rem;
-    cursor: pointer;
-    color: #d3d9d4;
+    z-index: 1001;
   }
 
   .nav-menu {
     display: none;
-    width: 100%;
   }
 
   .nav-menu.active {
     display: block;
     position: fixed;
-    top: 60px;
-    left: 0;
+    top: 0;
+    right: -250px;
+    width: 250px;
+    height: 100%;
     background-color: #124e66;
-    height: calc(100vh - 60px);
-    overflow-y: auto;
-    z-index: 998;
+    padding-top: 70px;
+    transition: right 0.3s ease;
+    z-index: 999;
+  }
+
+  .nav-menu.active {
+    right: 0;
   }
 
   .nav-links {
     display: block;
     width: 100%;
-  }
-
-  .nav-links li {
-    display: block;
-    width: 100%;
+    list-style: none;
+    padding: 0;
+    margin: 0;
   }
 
   .nav-item {
-    display: block;
+    width: 100%;
+  }
+
+  .nav-links li {
     width: 100%;
   }
 
@@ -194,44 +175,57 @@
   .nav-links li .nav-link {
     display: block;
     width: 100%;
-    padding: 15px;
+    padding: 15px 20px;
     text-align: left;
     border-bottom: 1px solid #2E3944;
     color: #d3d9d4;
   }
 
-  /* Dropdown Menu Styles */
-  .nav-item .dropdown-menu {
-    display: none;
+  .nav-links li a:hover,
+  .nav-links li .nav-link:hover {
     background-color: #0f3c4b;
-    padding-left: 20px;
-    border-left: 4px solid #748D92;
+    color: #ffffff;
+  }
+
+  /* Dropdown Menu Styles for Mobile */
+  .dropdown-menu {
+    background-color: #0f3c4b;
+    list-style: none;
+    padding: 0;
+    margin: 0;
   }
 
   .nav-item.active .dropdown-menu {
     display: block;
   }
 
-  .dropdown-menu li {
-    display: block;
-    width: 100%;
-  }
-
-  .dropdown-menu li a,
-  .dropdown-menu li .nav-link {
-    display: block;
-    width: 100%;
-    padding: 15px;
-    text-align: left;
+  .dropdown-menu li a {
+    padding: 10px 30px; /* Indent dropdown items */
     color: #d3d9d4;
   }
 
-  /* Optional Hover Effect */
   .dropdown-menu li a:hover {
-    background-color: #748D92;
-    color: #fff;
+    background-color: #2E3944;
+    color: #ffffff;
+  }
+
+  /* Menu Overlay */
+  .menu-overlay {
+    display: none;
+  }
+
+  .menu-overlay.active {
+    display: block;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 998;
   }
 }
+
 
 /* QuestionOfTheDay.css */
 
