@@ -1510,7 +1510,12 @@ archive */
   z-index: 1001;
   border-radius: 12px;
   text-align: center;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+  /* box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+  border: 25px solid transparent;
+  border-image: linear-gradient(45deg, gold, silver, bronze);
+  border-image-slice: 1; */
+  border: 3px solid var(--medal-color);
+  box-shadow: 0 0 15px var(--medal-color);
 }
 
 .modal-content h2 {
@@ -1553,4 +1558,8 @@ archive */
 .medal-emoji {
   font-size: 5em;
   margin: 20px 0;
+}
+
+:root {
+  --medal-color: gold; /* Default color */
 }

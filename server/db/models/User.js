@@ -32,6 +32,10 @@ const User = db.define('user', {
     type: Sequelize.INTEGER,
     defaultValue: 0,
   },
+  wins: {
+    type: Sequelize.INTEGER,
+    defaultValue: 0,
+  },
 })
 
 module.exports = User

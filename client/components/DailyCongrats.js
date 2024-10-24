@@ -159,9 +159,8 @@ function DailyCongrats() {
       const localStorageKey = `congratsModalShown_${userId}_${yesterdayDate}`;
 
       // Check if the modal has already been shown
-      const modalShown = false
+      const modalShown = localStorage.getItem(localStorageKey);
 
-      // localStorage.getItem(localStorageKey);
 
       if (modalShown) {
         // Modal has already been shown, do nothing
@@ -254,6 +253,19 @@ function DailyCongrats() {
   if (!showCongratsModal) {
     return null;
   }
+
+  const medalColors = {
+    1: 'gold',
+    2: 'silver',
+    3: '#cd7f32' // Bronze color
+  };
+
+  const medalColor = medalColors[userRank] || 'gold';
+
+  // Set the CSS variable
+  // useEffect(() => {
+  //   document.documentElement.style.setProperty('--medal-color', medalColor);
+  // }, [medalColor]);
 
   const medalEmoji = getMedalEmoji(userRank);
 
