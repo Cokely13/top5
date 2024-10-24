@@ -79,6 +79,8 @@ function Profile() {
     }
   };
 
+  console.log("users", user)
+
   const handleUpload = async () => {
     if (!selectedFile) {
       alert('Please select a file to upload');
@@ -114,22 +116,7 @@ function Profile() {
     return uniqueQuestions.size;
   };
 
-  const getCareerWins = () => {
-    if (!questions || questions.length === 0) return 0;
-    return questions.filter((q) => q.dailyWinnerId === user.id).length;
-  };
 
-  const getLongestLossStreak = () => {
-    if (!user.Guesses || user.Guesses.length === 0) return 0;
-    const firstAnsweredDate = new Date(Math.min(...user.Guesses.map((g) => new Date(g.createdAt))));
-    const mostRecentWin = questions.filter((q) => q.dailyWinnerId === user.id)
-      .map((q) => new Date(q.dateAsked))
-      .reduce((latest, current) => (current > latest ? current : latest), firstAnsweredDate);
-    const currentDate = new Date();
-    let diffTime = Math.abs(currentDate - mostRecentWin);
-    let streak = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) - 1;
-    return streak < 0 ? 0 : streak;
-  };
 
   const getOverallRank = () => {
     // Sort users by totalPoints
@@ -234,13 +221,8 @@ function Profile() {
               <div className="stat-item">
                 <i className="fas fa-trophy"></i>
                 <p>Career Wins</p>
-                <h3>{getCareerWins()}</h3>
+                <h3>{user.wins}</h3>
               </div>
-              {/* <div className="stat-item">
-                <i className="fas fa-calendar-times"></i>
-                <p>Longest Loss Streak</p>
-                <h3>{getLongestLossStreak()} days</h3>
-              </div> */}
               <div className="stat-item">
                 <i className="fas fa-medal"></i>
                 <p>Overall Rank</p>

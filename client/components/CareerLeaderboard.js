@@ -94,6 +94,7 @@ function CareerLeaderboard() {
             <th>User</th>
             <th>Rank</th>
             <th>Points</th>
+            <th>Wins</th>
           </tr>
         </thead>
         <tbody>
@@ -111,6 +112,7 @@ function CareerLeaderboard() {
                 {user.rank === 3 && <span className="medal bronze">🥉</span>}
                 {user.rank}
               </td>
+              <td style={{ textAlign: 'center' }}>{user.wins}</td>
               <td style={{ textAlign: 'center' }}>{user.totalPoints}</td>
             </tr>
           ))}

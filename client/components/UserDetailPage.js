@@ -70,10 +70,6 @@ function UserDetailPage() {
     return uniqueQuestions.size;
   };
 
-  const getCareerWins = () => {
-    if (!questions || questions.length === 0) return 0;
-    return questions.filter((q) => q.dailyWinnerId === selectedUser.id).length;
-  };
 
 
 const getOverallRank = () => {
@@ -84,7 +80,6 @@ const getOverallRank = () => {
 
   // Sort users by totalPoints
   const sortedUsers = [...users].sort((a, b) => b.totalPoints - a.totalPoints);
-  console.log("sorted", sortedUsers);
 
   // Assign ranks
   let rank = 1;
@@ -133,7 +128,7 @@ const getOverallRank = () => {
             <div className="userdetailstat-item">
               <i className="fas fa-trophy"></i>
               <p>Career Wins</p>
-              <h3>{getCareerWins()}</h3>
+              <h3>{selectedUser.wins}</h3>
             </div>
             <div className="userdetailstat-item">
               <i className="fas fa-medal"></i>
