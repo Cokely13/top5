@@ -63,6 +63,23 @@ async function updateDailyQuestionAndWinner() {
       // Update the question with the daily winner
       await question.update({ dailyWinnerId: winnerId });
       console.log(`Daily winner updated successfully for question ID ${question.id}. Winner ID: ${winnerId}`);
+
+
+      // Increment the user's wins field
+      const winnerUser = await User.findByPk(winnerId);
+
+      if (winnerUser) {
+        const currentWins = winnerUser.wins || 0;
+        await winnerUser.update({ wins: currentWins + 1 });
+        console.log(
+          `User ${winnerUser.username} (ID: ${winnerId}) wins incremented. Total wins: ${
+            currentWins + 1
+          }`
+        );
+      } else {
+        console.log(`Winner user with ID ${winnerId} not found.`);
+      }
+
     }
 
     // Mark the question as expired
