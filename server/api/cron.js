@@ -1,5 +1,5 @@
 const cron = require('node-cron');
-const { models: { Question, Guess } } = require('../db');
+const { models: { Question, Guess, User } } = require('../db');
 
 async function updateDailyQuestionAndWinner() {
   console.log('Running scheduled task to update daily question and winner...');
@@ -62,6 +62,15 @@ async function updateDailyQuestionAndWinner() {
       // Update the question with the daily winner
       await question.update({ dailyWinnerId: winnerId });
       console.log(`Daily winner updated successfully for question ID ${question.id}. Winner ID: ${winnerId}`);
+
+      const winnerUser = await User.findByPk(winnerId);
+      if (winnerUser) {
+        const currentWins = winnerUser.wins || 0;
+        await winnerUser.update({ wins: currentWins + 1 });
+        console.log(`User ${winnerUser.username} (ID: ${winnerId}) wins incremented. Total wins: ${currentWins + 1}`);
+      } else {
+        console.log(`Winner user with ID ${winnerId} not found.`);
+      }
     }
 
     // Mark the question as expired
