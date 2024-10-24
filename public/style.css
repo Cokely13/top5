@@ -396,7 +396,7 @@
 }
 
 .rank-message {
-  font-size: 200px;
+  font-size: 3rem;
   color: gold;
   font-weight: bold;
   text-shadow: 2px 2px 4px black;
@@ -798,32 +798,28 @@
 }
 
 .strike-message {
-  font-size: 200px;
+  font-size: 3rem;
   color: red;
   font-weight: bold;
-  margin-bottom: 20px; /* Space between the message and the red X */
-  /* animation: fadeOut 3s forwards; */
+  margin-bottom: 20px;
 }
 
 .red-x {
-  font-size: 200px;
+  font-size: 5rem;
   color: red;
   font-weight: bold;
   /* animation: fadeOut 3s forwards; */
 }
 
 @media (min-width: 600px) {
-  .strike-message {
-    font-size: 3rem;
-    margin-bottom: 20px;
-  }
-
-  .red-x {
-    font-size: 8rem;
-  }
-
   .rank-message {
     font-size: 5rem;
+  }
+  .strike-message {
+    font-size: 5rem;
+  }
+  .red-x {
+    font-size: 8rem;
   }
 }
 

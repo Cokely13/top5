@@ -93,8 +93,8 @@ function CareerLeaderboard() {
           <tr>
             <th>User</th>
             <th>Rank</th>
-            <th>Points</th>
             <th>Wins</th>
+            <th>Points</th>
           </tr>
         </thead>
         <tbody>
