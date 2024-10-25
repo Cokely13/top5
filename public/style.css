@@ -226,6 +226,19 @@
   }
 }
 
+.category-selector {
+  margin-bottom: 20px;
+}
+
+.category-selector label {
+  margin-right: 10px;
+  font-weight: bold;
+}
+
+.category-selector select {
+  padding: 5px 10px;
+  font-size: 1rem;
+}
 
 /* QuestionOfTheDay.css */
 
