@@ -2,7 +2,7 @@
 const axios = require('axios');
 const {
   db,
-  models: { User, Question, Answer },
+  models: { User, Question, Answer, Guess },
 } = require('../server/db');
 
 async function getHighestGrossingMovies(year) {
@@ -62,7 +62,7 @@ async function getHighestRatedTVShows(year) {
 }
 
 async function seed() {
-  await db.sync({ force: true }); // clears db and matches models to tables
+  await db.sync({ force: true }); // Clears db and matches models to tables
   console.log('db synced!');
 
   // Creating Users
@@ -90,17 +90,22 @@ async function seed() {
     }),
   ]);
 
-  // Helper function to add days to a date
+  // Helper functions
   const addDays = (date, days) => {
     const result = new Date(date);
     result.setDate(result.getDate() + days);
     return result.toISOString().split('T')[0]; // Convert to YYYY-MM-DD format
   };
 
-  const today = new Date().toISOString().split('T')[0]; // Get today's date in YYYY-MM-DD format
+  const adjustDays = (date, days) => {
+    const result = new Date(date);
+    result.setDate(result.getDate() + days);
+    return result.toISOString().split('T')[0];
+  };
 
-  // Creating Questions and Answers
-  // We'll create an array of questions with their answers
+  const today = new Date().toISOString().split('T')[0];
+
+  // Existing questionData
   const questionData = [
     {
       text: 'What is the most popular color?',
@@ -185,9 +190,9 @@ async function seed() {
         'Subway',
         'KFC',
         'Burger King',
-        'Taco Bell',
-        'Wendy\'s',
-        'Dunkin\'',
+        "Taco Bell",
+        "Wendy's",
+        "Dunkin'",
         "Domino's Pizza",
         'Pizza Hut',
       ],
@@ -409,28 +414,30 @@ async function seed() {
       ],
     },
   ];
-  let dateOffset = questionData.length + 1
-    // Fetching the highest grossing movies for each year from 2013 to 2023
-    for (let year = 2013; year <= 2023; year++) {
-      const topMovies = await getHighestGrossingMovies(year);
-      if (topMovies.length > 0) {
-        questionData.push({
-          text: `What is the highest grossing movie of ${year}?`,
-          dateAsked: addDays(today, dateOffset++), // Schedule each year question after the base question
-          createdBy: users[0].id,
-          category: 'Movies',
-          answers: topMovies,
-        });
-      }
-    }
 
-      // Fetching the highest rated movies for each year from 2013 to 2023
+  let dateOffset = questionData.length + 1;
+
+  // Fetching the highest grossing movies for each year from 2013 to 2023
+  for (let year = 2013; year <= 2023; year++) {
+    const topMovies = await getHighestGrossingMovies(year);
+    if (topMovies.length > 0) {
+      questionData.push({
+        text: `What is the highest grossing movie of ${year}?`,
+        dateAsked: addDays(today, dateOffset++),
+        createdBy: users[0].id,
+        category: 'Entertainment',
+        answers: topMovies,
+      });
+    }
+  }
+
+  // Fetching the highest rated movies for each year from 2013 to 2023
   for (let year = 2013; year <= 2023; year++) {
     const highestRatedMovies = await getHighestRatedMovies(year);
     if (highestRatedMovies.length > 0) {
       questionData.push({
         text: `What is the highest rated movie of ${year}?`,
-        dateAsked: addDays(today, dateOffset++), // Ensure unique date for each question
+        dateAsked: addDays(today, dateOffset++),
         createdBy: users[0].id,
         category: 'Entertainment',
         answers: highestRatedMovies,
@@ -444,7 +451,7 @@ async function seed() {
     if (highestRatedTVShows.length > 0) {
       questionData.push({
         text: `What is the highest rated TV show of ${year}?`,
-        dateAsked: addDays(today, dateOffset++), // Ensure unique date for each question
+        dateAsked: addDays(today, dateOffset++),
         createdBy: users[0].id,
         category: 'Entertainment',
         answers: highestRatedTVShows,
@@ -452,13 +459,127 @@ async function seed() {
     }
   }
 
-  // Create Questions and Answers
-  for (const qData of questionData) {
+  // ==========================
+  // ADDING DUMMY EXPIRED DATA
+  // ==========================
+
+  // Expired Questions Data
+  const expiredQuestionData = [
+    {
+      text: 'Who won the FIFA World Cup in 2018?',
+      dateAsked: adjustDays(today, -1),
+      createdBy: users[0].id,
+      category: 'Sports',
+      expired: true,
+      dailyWinnerId: users[0].id, // Ryan
+      answers: [
+        'France',
+        'Croatia',
+        'Belgium',
+        'England',
+        'Russia',
+        'Brazil',
+        'Sweden',
+        'Uruguay',
+        'Colombia',
+        'Switzerland',
+      ],
+    },
+    {
+      text: 'What are the top-grossing movies of 2019?',
+      dateAsked: adjustDays(today, -2),
+      createdBy: users[0].id,
+      category: 'Entertainment',
+      expired: true,
+      dailyWinnerId: users[1].id, // Matt
+      answers: [
+        'Avengers: Endgame',
+        'The Lion King',
+        'Frozen II',
+        'Spider-Man: Far From Home',
+        'Captain Marvel',
+        'Joker',
+        'Star Wars: The Rise of Skywalker',
+        'Toy Story 4',
+        'Aladdin',
+        'Jumanji: The Next Level',
+      ],
+    },
+    {
+      text: 'What are the most popular pizza toppings?',
+      dateAsked: adjustDays(today, -3),
+      createdBy: users[0].id,
+      category: 'Food',
+      expired: true,
+      dailyWinnerId: users[3].id, // Jamal
+      answers: [
+        'Pepperoni',
+        'Mushrooms',
+        'Onions',
+        'Sausage',
+        'Bacon',
+        'Extra cheese',
+        'Black olives',
+        'Green peppers',
+        'Pineapple',
+        'Spinach',
+      ],
+    },
+    {
+      text: 'Who are the highest-paid athletes of 2020?',
+      dateAsked: adjustDays(today, -4),
+      createdBy: users[0].id,
+      category: 'Sports',
+      expired: true,
+      dailyWinnerId: users[1].id, // Matt
+      answers: [
+        'Roger Federer',
+        'Cristiano Ronaldo',
+        'Lionel Messi',
+        'Neymar',
+        'LeBron James',
+        'Stephen Curry',
+        'Kevin Durant',
+        'Tiger Woods',
+        'Kirk Cousins',
+        'Carson Wentz',
+      ],
+    },
+    {
+      text: 'What are the most common programming languages?',
+      dateAsked: adjustDays(today, -5),
+      createdBy: users[0].id,
+      category: 'Other',
+      expired: true,
+      dailyWinnerId: users[0].id, // Ryan
+      answers: [
+        'JavaScript',
+        'Python',
+        'Java',
+        'C#',
+        'PHP',
+        'C++',
+        'TypeScript',
+        'Ruby',
+        'Swift',
+        'Go',
+      ],
+    },
+  ];
+
+  // Initialize a user stats object to keep track of points and wins
+  const userStats = {};
+
+  // Create Expired Questions, Answers, and Guesses
+  for (const qData of expiredQuestionData) {
     const question = await Question.create({
       text: qData.text,
       dateAsked: qData.dateAsked,
       status: 'accepted',
       createdBy: qData.createdBy,
+      category: qData.category,
+      expired: qData.expired,
+      dailyWinnerId: qData.dailyWinnerId,
     });
 
     // Create Answers
@@ -469,10 +590,102 @@ async function seed() {
         questionId: question.id,
       });
     }
+
+    // Initialize user stats for this question
+    for (const user of users) {
+      if (!userStats[user.id]) {
+        userStats[user.id] = {
+          totalPoints: 0,
+          wins: 0,
+          categories: {}, // To track points and wins per category
+        };
+      }
+      if (!userStats[user.id].categories[qData.category]) {
+        userStats[user.id].categories[qData.category] = {
+          points: 0,
+          wins: 0,
+        };
+      }
+    }
+
+    // Create Guesses for users
+    for (const user of users) {
+      let guessedAnswers;
+      if (user.id === qData.dailyWinnerId) {
+        // Daily winner guessed more correct answers
+        guessedAnswers = qData.answers.slice(0, 5); // Top 5 answers
+      } else {
+        // Other users guessed fewer answers
+        guessedAnswers = qData.answers.slice(5, 7); // Next 2 answers
+      }
+
+      let userTotalPoints = 0;
+
+      for (const guessText of guessedAnswers) {
+        // Assign points based on rank
+        const answerRank = qData.answers.indexOf(guessText) + 1;
+        const pointsEarned = 11 - answerRank; // Higher rank, more points
+        userTotalPoints += pointsEarned;
+
+        await Guess.create({
+          guess: guessText,
+          pointsEarned: pointsEarned,
+          userId: user.id,
+          questionId: question.id,
+        });
+      }
+
+      // Incorrect guess (adds a strike but no points)
+      await Guess.create({
+        guess: 'Incorrect Guess',
+        pointsEarned: 0,
+        userId: user.id,
+        questionId: question.id,
+      });
+
+      // Update userStats with points earned for this question
+      userStats[user.id].totalPoints += userTotalPoints;
+      userStats[user.id].categories[qData.category].points += userTotalPoints;
+    }
+
+    // Update wins for the daily winner
+    const winnerId = qData.dailyWinnerId;
+    userStats[winnerId].wins += 1;
+    userStats[winnerId].categories[qData.category].wins += 1;
+  }
+
+  // Update users with totalPoints and wins
+  for (const user of users) {
+    const stats = userStats[user.id];
+    await user.update({
+      totalPoints: stats.totalPoints,
+      wins: stats.wins,
+    });
+  }
+
+  // Create Future Questions and Answers
+  for (const qData of questionData) {
+    const question = await Question.create({
+      text: qData.text,
+      dateAsked: qData.dateAsked,
+      status: 'accepted',
+      createdBy: qData.createdBy,
+      category: qData.category,
+    });
+
+    // Create Answers
+    for (let i = 0; i < qData.answers.length; i++) {
+      await Answer.create({
+        text: qData.answers[i],
+        rank: i + 1,
+        questionId: question.id,
+      });
+    }
   }
 
   console.log(`seeded ${users.length} users`);
-  console.log(`seeded ${questionData.length} questions with answers`);
+  console.log(`seeded ${questionData.length} future questions with answers`);
+  console.log(`seeded ${expiredQuestionData.length} expired questions with answers`);
   console.log('seeded successfully');
 
   return {
@@ -504,4 +717,4 @@ if (module === require.main) {
   runSeed();
 }
 
-module.exports = seed
+module.exports = seed;
