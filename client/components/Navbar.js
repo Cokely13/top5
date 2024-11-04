@@ -160,7 +160,7 @@ const Navbar = ({ handleClick, isLoggedIn, isAdmin }) => {
        {/* Rules Modal */}
        {isRulesModalOpen && (
         <div className="modal-overlay" onClick={closeRulesModal}>
-          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+          <div className="modalrules-content" onClick={(e) => e.stopPropagation()}>
             <span className="close-button" onClick={closeRulesModal}>&times;</span>
             <h2>Rules</h2>
             <p>

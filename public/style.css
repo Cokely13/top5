@@ -1566,3 +1566,47 @@ archive */
 :root {
   --medal-color: gold; /* Default color */
 }
+
+
+/* Close Button */
+.close-button {
+  position: absolute;
+  top: 15px;
+  right: 20px;
+  font-size: 1.5em;
+  font-weight: bold;
+  color: #aaa;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.close-button:hover {
+  color: #000;
+}
+
+.modalrules-content {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #fff;
+  width: 80%;
+  max-width: 500px;
+  padding: 30px;
+  z-index: 1001;
+  border-radius: 12px;
+  text-align: center;
+  border: 3px solid rgba(0,0,0,0.3);
+  box-shadow: 0 0 15px rgba(0,0,0,0.3);
+}
+
+.modalrules-content h2 {
+  margin-top: 0;
+  font-size: 2em;
+  color: #333;
+}
+
+.modalrules-content p {
+  font-size: 1.2em;
+  color: #555;
+}
